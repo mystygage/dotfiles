@@ -14,4 +14,6 @@ else
 	fi
 fi
 unset doIt
+
+cd ~
 source ~/.bash_profile
