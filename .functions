@@ -1,0 +1,19 @@
+# Create a new directory and enter it
+function mkd() {
+	mkdir -p "$@" && cd "$@"
+}
+
+# Create a data URL from a file
+function dataurl() {
+	local mimeType=$(file -b --mime-type "$1")
+	if [[ $mimeType == text/* ]]; then
+		mimeType="${mimeType};charset=utf-8"
+	fi
+	echo "data:${mimeType};base64,$(openssl base64 -in "$1" | tr -d '\n')"
+}
+
+# Reset Write Permission and remove scc-files 
+function resetVss(){
+	find . -path ./.git -prune -o -perm 444 -print | xargs chmod 644
+	find . -path ./.git -prune -o -name vssver2.scc -print | xargs rm -f	
+}
