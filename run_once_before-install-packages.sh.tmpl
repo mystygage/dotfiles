@@ -1,0 +1,57 @@
+{{- if (eq .chezmoi.os "darwin") -}}
+#!/bin/bash -x
+
+# If Homebrew is not installed on the system, it will be installed here
+if test ! $(which brew); then
+  printf '\n\n\e[33mHomebrew not found. \e[0mInstalling Homebrew...'
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+else
+  printf '\n\n\e[0mHomebrew found. Continuing...'
+fi
+
+brew bundle --no-lock --file=/dev/stdin <<EOF
+tap "1password/tap"
+tap "buo/cask-upgrade"
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/core"
+tap "homebrew/services"
+brew "asdf"
+brew "bash"
+brew "bat"
+brew "chezmoi"
+brew "exa"
+brew "fzf"
+brew "git"
+brew "git-lfs"
+brew "htop"
+brew "mkcert"
+brew "openssh"
+brew "yubikey-agent", restart_service: true
+brew "zsh"
+cask "1password"
+cask "1password-cli"
+cask "alfred"
+cask "canon-eos-webcam-utility"
+cask "docker"
+cask "elgato-stream-deck"
+cask "geotag-photos-pro"
+cask "google-chrome"
+cask "iterm2"
+cask "lens"
+cask "microsoft-teams"
+cask "obsidian"
+cask "tweetbot"
+cask "visual-studio-code"
+cask "yubico-yubikey-manager"
+EOF
+
+printf '\n\nSetting Global Mac Settings...\n'
+# better key repeat
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
+defaults write NSGlobalDomain KeyRepeat -int 1
+# no delay for dock hiding
+defaults write com.apple.dock autohide-delay -float 0
+dscacheutil -flushcache
+
+{{ end -}}

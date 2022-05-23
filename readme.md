@@ -1,13 +1,5 @@
-# Dotfiles
+# github.com/mystygage/dotfiles
 
-dotfiles for OSX / Ubuntu
+dotfiles, managed with [strap](https://github.com/MikeMcQuaid/strap) and [`chezmoi`](https://github.com/twpayne/chezmoi).
 
-
-## Under Construction
-I like the idea of putting dotfiles under version control and these are my first steps. Many scripts and configs are inspired and copied from [Mathias Bynens](https://github.com/mathiasbynens/dotfiles)
-
-## Usage
-
-Clone this repo
-`git clone https://github.com/mystygage/dotfiles.git`
-and execute bootstrap.sh
+Setup with [strap](https://macos-strap.herokuapp.com/)
