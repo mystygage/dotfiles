@@ -1,0 +1,17 @@
+{{ $extensions := list
+     "EditorConfig.EditorConfig"
+     "dracula-theme.theme-dracula"
+     "ms-azuretools.vscode-docker"
+     "ms-vscode-remote.remote-containers"
+     "ms-vscode-remote.remote-ssh"
+     "ms-vscode-remote.remote-ssh-edit"
+     "ms-vscode-remote.vscode-remote-extensionpack"
+     "yzhang.markdown-all-in-one" -}}
+
+#!/bin/bash
+
+set -eufo pipefail
+
+{{ range $extensions -}}
+code --force --install-extension {{ . }}
+{{ end -}}

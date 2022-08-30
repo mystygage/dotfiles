@@ -1,0 +1,12 @@
+# Configuration for Alacritty, the GPU enhanced terminal emulator.
+# Documentation: https://github.com/alacritty/alacritty/blob/master/alacritty.yml
+
+import:
+  - ./dracula.yml
+
+window:
+  padding:
+   x: 10
+   y: 10
+
+  decorations: buttonless

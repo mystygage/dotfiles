@@ -2,5 +2,8 @@
 set -euo pipefail
 set -vx
 
+# Remove the symlink for the Brewfile created just for strap
+rm -f ~/.Brewfile
+
 echo "setting up all other dotfiles..."
 chezmoi apply

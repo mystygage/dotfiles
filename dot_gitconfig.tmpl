@@ -1,18 +1,24 @@
+{{ if eq .chezmoi.os "darwin" }}
+[credential]
+	helper = osxkeychain
+{{ end }}
 [filter "lfs"]
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
 [user]
-    name = mystygage
-    email = 1107406+mystygage@users.noreply.github.com
+    name = {{ .name }}
+    email = {{ .email }}
+[github]
+	user = mystygage
 [init]
     defaultBranch = main
 [rebase]
     autoSquash = true
     autoStash = true
 [core]
-    excludesfile = /Users/markus/.gitignore_global
+    excludesfile = {{ .chezmoi.homeDir }}/.gitignore_global
 [difftool "sourcetree"]
     cmd = opendiff \"$LOCAL\" \"$REMOTE\"
     path =
@@ -20,7 +26,7 @@
     cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
     trustExitCode = true
 [commit]
-    template = /Users/markus/.stCommitMsg
+    template = {{ .chezmoi.homeDir }}/.stCommitMsg
     verbose = true
 [pull]
     rebase = true
@@ -28,8 +34,6 @@
     prune = true
 [push]
     default = simple
-[merge]
-    conflictstyle = zdiff3
 [rerere]
     enabled = true
 [alias]

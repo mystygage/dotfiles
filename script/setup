@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Script is called by strap for setting up the dotfiles
+
 set -euo pipefail
 set -vx
 echo "moving dotfiles for chezmoi..."
@@ -17,4 +20,7 @@ echo "moving dotfiles for chezmoi..."
 echo "setting up Brewfile"
 brew install chezmoi
 chezmoi init
-chezmoi apply ~/.Brewfile
+chezmoi apply ~/.config
+
+# create symlink for ~/.Brewfile, to make the installtion with strap easier
+[[ -L ~/.config/brew/Brewfile ]] || ln -sf ~/.config/brew/Brewfile ~/.Brewfile

@@ -1,0 +1,4 @@
+'.config/alacritty/dracula.yaml':
+  type: file
+  url: https://raw.githubusercontent.com/dracula/alacritty/master/dracula.yml
+  refreshPeriod: 168h
