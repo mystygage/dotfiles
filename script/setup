@@ -17,10 +17,7 @@ echo "moving dotfiles for chezmoi..."
 [[ -d ~/.local/share ]] || mkdir -p ~/.local/share
 [[ -L ~/.local/share/chezmoi ]] || ln -sf ~/Projects/private/dotfiles ~/.local/share/chezmoi
 
-echo "setting up Brewfile"
-brew install chezmoi
-chezmoi init
-chezmoi apply ~/.config
+echo "prepare chezmoi..."
+[[ "$(command -v chezmoi)" ]] || brew install chezmoi
 
-# create symlink for ~/.Brewfile, to make the installtion with strap easier
-[[ -L ~/.config/brew/Brewfile ]] || ln -sf ~/.config/brew/Brewfile ~/.Brewfile
+chezmoi init
