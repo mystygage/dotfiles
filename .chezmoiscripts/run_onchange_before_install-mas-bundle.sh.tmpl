@@ -1,0 +1,16 @@
+{{- if (eq .chezmoi.os "darwin") -}}
+#!/bin/bash
+
+set -eufo pipefail
+
+brew bundle --no-lock --file=/dev/stdin <<EOF
+
+mas "1Password for Safari", id: 1569813296
+mas "Lungo", id: 1263070803
+mas "Moom", id: 419330170
+mas "Pins for Pinboard", id: 1547106997
+mas "Shareful", id: 1522267256
+
+EOF
+
+{{ end -}}

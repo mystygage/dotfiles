@@ -1,11 +1,19 @@
+{{- if (eq .chezmoi.os "darwin") -}}
+#!/bin/bash
+
+set -eufo pipefail
+
+brew bundle --no-lock --file=/dev/stdin <<EOF
+
+tap "1password/tap"
+tap "buo/cask-upgrade"
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/cask-drivers"
 tap "homebrew/cask-fonts"
 tap "homebrew/core"
 tap "homebrew/services"
-tap "1password/tap"
-tap "buo/cask-upgrade"
+
 brew "bash"
 brew "bat"
 brew "chezmoi"
@@ -17,6 +25,7 @@ brew "mas"
 brew "openssh"
 brew "yubikey-agent", restart_service: true
 brew "zsh"
+
 cask "1password"
 cask "1password-cli"
 cask "alacritty"
@@ -33,3 +42,7 @@ cask "obsidian"
 cask "tweetbot"
 cask "visual-studio-code"
 cask "yubico-yubikey-manager"
+
+EOF
+
+{{ end -}}

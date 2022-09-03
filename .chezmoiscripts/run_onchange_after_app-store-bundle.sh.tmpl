@@ -1,6 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-set -vx
-
-# {{ include "private_dot_config/brew/Brewfile.mas" | sha256sum }}
-brew bundle check --file ~/.config/brew/Brewfile.mas || brew bundle install --no-lock --file ~/.config/brew/Brewfile.mas
