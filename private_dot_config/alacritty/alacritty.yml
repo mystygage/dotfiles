@@ -6,7 +6,14 @@ import:
 
 window:
   padding:
-   x: 10
-   y: 10
+   x: 15
+   y: 15
 
   decorations: buttonless
+
+font:
+  size: 18.0
+
+selection:
+  # selected text will be copied to the clipboard.
+  save_to_clipboard: true
