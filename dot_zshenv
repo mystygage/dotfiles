@@ -1,17 +1,5 @@
-#
-# Defines environment variables.
-#
+# Use $HOME/.config for storing all config files
 
-if [[ -z "$XDG_CONFIG_HOME" ]]
-then
-  export XDG_CONFIG_HOME="$HOME/.config/"
-fi
-
-# Ensure that a non-login, non-interactive shell has a defined environment.
-if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprofile"
-fi
-
-# use vim as default editor
-export EDITOR='vim'
-export VISUAL='vim'
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}"
+export ZDOTDIR="${ZDOTDIR:=$XDG_CONFIG_HOME/zsh}"
+source "$ZDOTDIR/.zshenv"

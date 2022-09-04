@@ -24,7 +24,7 @@ setopt HIST_IGNORE_SPACE
 HISTORY_IGNORE="cccccc*"
 
 # ensure a big history
-HISTSIZE=100000
+HISTSIZE=200000
 SAVEHIST=100000
 
 # fzf search for ctrl-r
@@ -52,5 +52,5 @@ compdef __start_kubectl k
 
 alias kn='kubectl config set-context --current --namespace'
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# To customize prompt, run `p10k configure` or edit "${ZDOTDIR:-$HOME}/.p10k.zsh".
+[[ ! -f "${ZDOTDIR:-$HOME}/.p10k.zsh" ]] || source "${ZDOTDIR:-$HOME}/.p10k.zsh"
