@@ -28,7 +28,7 @@ HISTSIZE=200000
 SAVEHIST=100000
 
 # fzf search for ctrl-r
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.config/fzf/fzf.zsh ] && source ~/.config/fzf/fzf.zsh
 
 # Jump, `cd` on steroids
 # Usage: `j dotfiles` instead of `cd ~/Projects/private/dotfiles`
