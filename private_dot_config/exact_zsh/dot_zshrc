@@ -30,6 +30,10 @@ SAVEHIST=100000
 # fzf search for ctrl-r
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Jump, `cd` on steroids
+# Usage: `j dotfiles` instead of `cd ~/Projects/private/dotfiles`
+eval "$(jump shell)"
+
 # 1Password CLI
 eval "$(op completion zsh)"; compdef _op op
 
