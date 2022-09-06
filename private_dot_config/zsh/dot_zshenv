@@ -7,6 +7,6 @@ if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; t
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
 
-# use vim as default editor
-export EDITOR='vim'
-export VISUAL='vim'
+# use neovim as default editor
+export EDITOR='nvim'
+export VISUAL='nvim'
