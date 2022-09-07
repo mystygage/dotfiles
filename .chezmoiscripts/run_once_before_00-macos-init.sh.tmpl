@@ -81,7 +81,7 @@ fi
   sudo chown "$USER:admin" Cellar Caskroom Frameworks bin etc include lib opt sbin share var
 )
 
-[ -d "$HOMEBREW_REPOSITORY" ] || sudo_askpass mkdir -p "$HOMEBREW_REPOSITORY"
+[ -d "$HOMEBREW_REPOSITORY" ] || sudo mkdir -p "$HOMEBREW_REPOSITORY"
 sudo chown -R "$USER:admin" "$HOMEBREW_REPOSITORY"
 
 if [ $HOMEBREW_PREFIX != $HOMEBREW_REPOSITORY ]; then
