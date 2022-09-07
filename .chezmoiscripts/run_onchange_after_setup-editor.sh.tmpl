@@ -15,3 +15,5 @@ set -eufo pipefail
 {{ range $extensions -}}
 code --force --install-extension {{ . }}
 {{ end -}}
+
+nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'

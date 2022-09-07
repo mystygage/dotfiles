@@ -24,6 +24,16 @@ defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int
 # (e.g. enable Tab in modal dialogs)
 defaults write -g AppleKeyboardUIMode -int 3
 
+LOGIN_TEXT="Found this computer? Please contact {{ .name }} at {{ .email }}."
+echo "$LOGIN_TEXT" | grep -q '[()]' && LOGIN_TEXT="'$LOGIN_TEXT'"
+sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$LOGIN_TEXT"
+
+## Security
+
+# Enable Firewall
+sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
+sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist 2>/dev/null
+
 # Screensaver should request password immediately
 defaults write com.apple.screensaver askForPassword -int 1
 defaults write com.apple.screensaver askForPasswordDelay -int 0
