@@ -18,4 +18,4 @@ else
 fi
 
 # exec: replace current process with chezmoi init
-exec "$chezmoi" init --ssh --apply mystygage
+exec "$chezmoi" init --apply mystygage
