@@ -1,9 +1,9 @@
-{{ if (eq .chezmoi.os "darwin") -}}
-#!/bin/bash
-set -euo pipefail
-# set -vx
+#!/usr/bin/env bash
 
-sudo -v
+set -euo pipefail
+
+{{ template "script_darwin_only" . }}
+{{ template "script_sudo" . }}
 
 ## General
 
@@ -123,5 +123,3 @@ defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool fals
 
 # Enable “Do Not Track”
 defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
-
-{{ end -}}

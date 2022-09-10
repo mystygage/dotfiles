@@ -1,7 +1,8 @@
-{{- if (eq .chezmoi.os "darwin") -}}
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -eufo pipefail
+set -euo pipefail
+
+{{ template "script_darwin_only" . }}
 
 brew bundle --no-lock --file=/dev/stdin <<EOF
 
@@ -46,5 +47,3 @@ cask "visual-studio-code"
 cask "yubico-yubikey-manager"
 
 EOF
-
-{{ end -}}

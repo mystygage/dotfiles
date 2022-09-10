@@ -1,11 +1,11 @@
-{{ if (eq .chezmoi.os "darwin") -}}
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
-# Script is borrowed by https://github.com/MikeMcQuaid/strap
+{{ template "script_darwin_only" . }}
+{{ template "script_sudo" . }}
 
-sudo -v
+# Script is borrowed from https://github.com/MikeMcQuaid/strap
 
 # Check and, if necessary, enable sudo authentication using TouchID.
 # Don't care about non-alphanumeric filenames when doing a specific match
@@ -96,6 +96,7 @@ git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 git fetch -q --tags --force
 git reset -q --hard origin/master
 unset GIT_DIR GIT_WORK_TREE
+echo "Ok"
 
 
 # Update Homebrew.
@@ -113,7 +114,5 @@ else
   echo "Installing software updates:"
   sudo softwareupdate --install --all
   xcode_license
+  echo "Ok"
 fi
-echo "Ok"
-
-{{ end -}}

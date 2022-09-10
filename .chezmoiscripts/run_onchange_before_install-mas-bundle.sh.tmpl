@@ -1,7 +1,8 @@
-{{- if (eq .chezmoi.os "darwin") -}}
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -eufo pipefail
+set -euo pipefail
+
+{{ template "script_darwin_only" . }}
 
 brew bundle --no-lock --file=/dev/stdin <<EOF
 
@@ -13,5 +14,3 @@ mas "Shareful", id: 1522267256
 mas "Velja", id: 1607635845
 
 EOF
-
-{{ end -}}
