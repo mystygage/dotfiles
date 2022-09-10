@@ -13,7 +13,3 @@ window:
 
 font:
   size: 18.0
-
-selection:
-  # selected text will be copied to the clipboard.
-  save_to_clipboard: true
