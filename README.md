@@ -4,8 +4,8 @@ personal dotfiles, managed with [`chezmoi`](https://github.com/twpayne/chezmoi).
 
 ## Setup
 
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mystygage/dotfiles/main/install.sh)"
+```bash
+sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply mystygage
 ```
 
 ## Details
@@ -14,6 +14,6 @@ personal dotfiles, managed with [`chezmoi`](https://github.com/twpayne/chezmoi).
 - install tools and apps with Homebrew
 - basic setup for
   - zsh with prezto
-  - alacritty
   - neovim
+  - alacritty 
   - vscode
