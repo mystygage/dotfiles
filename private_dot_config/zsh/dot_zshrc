@@ -30,6 +30,12 @@ SAVEHIST=100000
 # fzf search for ctrl-r
 [ -f ~/.config/fzf/fzf.zsh ] && source ~/.config/fzf/fzf.zsh
 
+# asdf version manager
+source $(brew --prefix asdf)/libexec/asdf.sh
+
+# Set Java Home
+[ -f ~/.asdf/plugins/java/set-java-home.zsh ] && source ~/.asdf/plugins/java/set-java-home.zsh
+
 # Jump, `cd` on steroids
 # Usage: `j dotfiles` instead of `cd ~/Projects/private/dotfiles`
 eval "$(jump shell)"
