@@ -28,6 +28,11 @@ LOGIN_TEXT="Found this computer? Please contact {{ .name }} at {{ .email }}."
 echo "$LOGIN_TEXT" | grep -q '[()]' && LOGIN_TEXT="'$LOGIN_TEXT'"
 sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$LOGIN_TEXT"
 
+## Network
+
+# Speed up browsing network shares by disabling reading/writing .DS_Store
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
+
 ## Security
 
 # Enable Firewall
