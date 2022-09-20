@@ -2,12 +2,12 @@
 -- https://bryankegley.me/posts/nvim-getting-started/
 
 local silent = { silent = true, noremap = true }
-local map = vim.api.nvim_set_keymap 
+local map = vim.api.nvim_set_keymap
 
-map('', '<up>', '<nop>', silent)
-map('', '<down>', '<nop>', silent)
-map('', '<left>', '<nop>', silent)
-map('', '<right>', '<nop>', silent)
+-- map('', '<up>', '<nop>', silent)
+-- map('', '<down>', '<nop>', silent)
+-- map('', '<left>', '<nop>', silent)
+-- map('', '<right>', '<nop>', silent)
 map('i', 'jk', '<ESC>', silent)
 map('i', 'JK', '<ESC>', silent)
 map('i', 'jK', '<ESC>', silent)
