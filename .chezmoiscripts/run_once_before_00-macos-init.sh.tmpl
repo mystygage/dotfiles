@@ -5,6 +5,16 @@ set -euo pipefail
 {{ template "script_darwin_only" . }}
 {{ template "script_sudo" . }}
 
+# XDG Cache folder
+# ~/Library/Caches directory is excluded from Time Machine by default.
+XDG_CACHE_FOLDER="${HOME}/Library/Caches/XDG-cache"
+HOME_CACHE_FOLDER="${HOME}/.cache"
+if [ ! -L "${HOME_CACHE_FOLDER}" ] ; then
+  cd "${XDG_CACHE_FOLDER}"
+  mv "${HOME_CACHE_FOLDER}" "${XDG_CACHE_FOLDER}"
+  ln -s "${XDG_CACHE_FOLDER}" "${HOME_CACHE_FOLDER}"
+fi
+
 # Script is borrowed from https://github.com/MikeMcQuaid/strap
 
 # Check and, if necessary, enable sudo authentication using TouchID.

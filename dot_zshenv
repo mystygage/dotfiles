@@ -1,4 +1,6 @@
-# Use $HOME/.config for storing all config files
+# Use $HOME/.config to store all configuration files.
+# Only the minimal environment variables are stored here to achieve this goal.
+# All other environment variables must be defined in `$ZDOTDIR/.zshenv
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}"
 export ZDOTDIR="${ZDOTDIR:=$XDG_CONFIG_HOME/zsh}"
