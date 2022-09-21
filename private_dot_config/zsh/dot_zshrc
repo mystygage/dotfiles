@@ -52,17 +52,21 @@ eval "$(op completion zsh)"; compdef _op op
 # use yubikey agent
 export SSH_AUTH_SOCK="$(brew --prefix)/var/run/yubikey-agent.sock"
 
-## exa instead of ls (https://the.exa.website/)
+# exa instead of ls (https://the.exa.website/)
 alias l='exa'
 alias la='exa -a'
 alias ll='exa -lah'
 alias ls='exa --color=auto'
 
-## Git Alias
+# Maven alias to support XDG Base Directory specification
+# https://issues.apache.org/jira/browse/MNG-6603
+alias mvn='mvn -gs "${XDG_CONFIG_HOME}"/maven/settings.xml'
+
+# Git Alias
 alias gcleanremote="git branch -vv | grep ': gone]' | grep -v '\*' | awk '{ print $1; }' | xargs -r git branch -d"
 alias gcleanlocal='git branch --merged main | grep -v "^\* main" | xargs -n 1 -r git branch -d'
 
-## Kubernetes
+# Kubernetes
 alias k='kubectl'
 compdef __start_kubectl k
 
