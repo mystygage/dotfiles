@@ -10,7 +10,7 @@ set -euo pipefail
 XDG_CACHE_FOLDER="${HOME}/Library/Caches/XDG-cache"
 HOME_CACHE_FOLDER="${HOME}/.cache"
 if [ ! -L "${HOME_CACHE_FOLDER}" ] ; then
-  cd "${XDG_CACHE_FOLDER}"
+  mkdir -p "${HOME_CACHE_FOLDER}"
   mv "${HOME_CACHE_FOLDER}" "${XDG_CACHE_FOLDER}"
   ln -s "${XDG_CACHE_FOLDER}" "${HOME_CACHE_FOLDER}"
 fi
