@@ -52,6 +52,11 @@ eval "$(op completion zsh)"; compdef _op op
 # use yubikey agent
 export SSH_AUTH_SOCK="$(brew --prefix)/var/run/yubikey-agent.sock"
 
+# use nvim instead of vim/vi
+alias vim="nvim"
+alias vi="nvim"
+alias oldvim="\vim"
+
 # exa instead of ls (https://the.exa.website/)
 alias l='exa'
 alias la='exa -a'
