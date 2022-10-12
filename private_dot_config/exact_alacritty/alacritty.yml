@@ -11,5 +11,9 @@ window:
 
   decorations: buttonless
 
+# Font configuration (changes require restart)
 font:
+  normal:
+    family: "MesloLGS NF"
+
   size: 18.0
