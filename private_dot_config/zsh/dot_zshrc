@@ -73,9 +73,10 @@ alias gcleanlocal='git branch --merged main | grep -v "^\* main" | xargs -n 1 -r
 
 # Kubernetes
 alias k='kubectl'
-source <(kubectl completion zsh)
-
 alias kn='kubectl config set-context --current --namespace'
+
+source "${HOME}/.local/bin/load-k8s-configs.sh"
+source <(kubectl completion zsh)
 
 # To customize prompt, run `p10k configure` or edit "${ZDOTDIR:-$HOME}/.p10k.zsh".
 [[ ! -f "${ZDOTDIR:-$HOME}/.p10k.zsh" ]] || source "${ZDOTDIR:-$HOME}/.p10k.zsh"
