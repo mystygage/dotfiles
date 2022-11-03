@@ -74,6 +74,7 @@ alias gcleanlocal='git branch --merged main | grep -v "^\* main" | xargs -n 1 -r
 # Kubernetes
 alias k='kubectl'
 alias kn='kubectl config set-context --current --namespace'
+alias kc='kubectl config set-context'
 
 source "${HOME}/.local/bin/load-k8s-configs.sh"
 source <(kubectl completion zsh)
