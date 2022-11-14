@@ -1,6 +1,6 @@
 {{ if eq .chezmoi.os "darwin" }}
 [credential]
-	helper = osxkeychain
+    helper = osxkeychain
 {{ end }}
 [filter "lfs"]
     clean = git-lfs clean -- %f
@@ -11,7 +11,7 @@
     name = {{ .name }}
     email = {{ .email }}
 [github]
-	user = mystygage
+    user = mystygage
 [init]
     defaultBranch = main
 [advice]
@@ -23,6 +23,8 @@
 [difftool "sourcetree"]
     cmd = opendiff \"$LOCAL\" \"$REMOTE\"
     path =
+[merge]
+    conflictstyle = diff3
 [mergetool "sourcetree"]
     cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
     trustExitCode = true
