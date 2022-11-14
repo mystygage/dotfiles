@@ -73,8 +73,10 @@ alias gcleanlocal='git branch --merged main | grep -v "^\* main" | xargs -n 1 -r
 
 # Kubernetes
 alias k='kubectl'
+alias kc='kubectl config use-context'
 alias kn='kubectl config set-context --current --namespace'
-alias kc='kubectl config set-context'
+alias kfc='kubectl config use-context $(kubectl config get-contexts -o name | fzf --height=6 --prompt="Kubernetes Context> ")'
+alias kfn='kubectl config set-context --current --namespace "$(kubectl get ns -o name | fzf -d/ --with-nth=2 | cut -d/ -f2)"'
 
 source "${HOME}/.local/bin/load-k8s-configs.sh"
 source <(kubectl completion zsh)
