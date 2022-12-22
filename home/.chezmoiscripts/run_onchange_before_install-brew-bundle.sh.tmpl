@@ -3,6 +3,7 @@
 set -euo pipefail
 
 {{ template "script_darwin_only" . }}
+{{ template "script_eval_brew" . }}
 
 brew bundle --no-lock --file=/dev/stdin <<EOF
 
