@@ -5,7 +5,7 @@ personal dotfiles, managed with [`chezmoi`](https://github.com/twpayne/chezmoi).
 ## Setup
 
 ```bash
-sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply mystygage
+sh -c "$(curl -fsLS git.io/chezmoi)" -- -b $HOME/.local/bin init --apply mystygage
 ```
 
 ## Details
