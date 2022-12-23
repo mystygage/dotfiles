@@ -2,3 +2,19 @@
   type: file
   url: https://raw.githubusercontent.com/dracula/alacritty/master/dracula.yml
   refreshPeriod: 168h
+'Library/Fonts/MesloLGS NF Bold.ttf':
+  type: file
+  url: https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf
+  refreshPeriod: 168h
+'Library/Fonts/MesloLGS NF Bold Italic.ttf':
+  type: file
+  url: https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf
+  refreshPeriod: 168h
+'Library/Fonts/MesloLGS NF Italic.ttf':
+  type: file
+  url: https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf
+  refreshPeriod: 168h
+'Library/Fonts/MesloLGS NF Regular.ttf':
+  type: file
+  url: https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
+  refreshPeriod: 168h
