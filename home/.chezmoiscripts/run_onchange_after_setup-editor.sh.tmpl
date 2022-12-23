@@ -12,8 +12,10 @@
 
 set -eufo pipefail
 
+{{ template "script_eval_brew" . }}
+
 {{ range $extensions -}}
-code --force --install-extension {{ . }}
+$(brew --prefix)/bin/code --force --install-extension {{ . }}
 {{ end -}}
 
 nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
