@@ -42,84 +42,6 @@ if [ "${CHEZMOI_OS}" == "darwin" ]; then
     fi
   fi
 
-  # Install the Xcode Command Line Tools.
-  if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]; then
-    echo "Installing the Xcode Command Line Tools:"
-    CLT_PLACEHOLDER="/tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress"
-    sudo touch "$CLT_PLACEHOLDER"
-
-    CLT_PACKAGE=$(softwareupdate -l \
-      | grep -B 1 "Command Line Tools" \
-      | awk -F"*" '/^ *\*/ {print $2}' \
-      | sed -e 's/^ *Label: //' -e 's/^ *//' \
-      | sort -V \
-      | tail -n1)
-    sudo softwareupdate -i "$CLT_PACKAGE"
-    sudo rm -f "$CLT_PLACEHOLDER"
-    if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]; then
-      echo "Requesting user install of Xcode Command Line Tools:"
-      xcode-select --install
-    fi
-  fi
-
-
-  # Check if the Xcode license is agreed to and agree if not.
-  xcode_license() {
-    if /usr/bin/xcrun clang 2>&1 | grep -q license; then
-      echo "Asking for Xcode license confirmation:"
-      sudo xcodebuild -license
-    fi
-  }
-  xcode_license
-
-  # Setup Homebrew directory and permissions.
-  echo "Installing Homebrew:"
-  HOMEBREW_PREFIX="$(brew --prefix 2>/dev/null || true)"
-  HOMEBREW_REPOSITORY="$(brew --repository 2>/dev/null || true)"
-  if [ -z "$HOMEBREW_PREFIX" ] || [ -z "$HOMEBREW_REPOSITORY" ]; then
-    UNAME_MACHINE="$(/usr/bin/uname -m)"
-    if [[ $UNAME_MACHINE == "arm64" ]]; then
-      HOMEBREW_PREFIX="/opt/homebrew"
-      HOMEBREW_REPOSITORY="${HOMEBREW_PREFIX}"
-    else
-      HOMEBREW_PREFIX="/usr/local"
-      HOMEBREW_REPOSITORY="${HOMEBREW_PREFIX}/Homebrew"
-    fi
-  fi
-  [ -d "$HOMEBREW_PREFIX" ] || sudo mkdir -p "$HOMEBREW_PREFIX"
-  if [ "$HOMEBREW_PREFIX" = "/usr/local" ]; then
-    sudo chown "root:wheel" "$HOMEBREW_PREFIX" 2>/dev/null || true
-  fi
-  (
-    cd "$HOMEBREW_PREFIX"
-    sudo mkdir -p Cellar Caskroom Frameworks bin etc include lib opt sbin share var
-    sudo chown "$USER:admin" Cellar Caskroom Frameworks bin etc include lib opt sbin share var
-  )
-
-  [ -d "$HOMEBREW_REPOSITORY" ] || sudo mkdir -p "$HOMEBREW_REPOSITORY"
-  sudo chown -R "$USER:admin" "$HOMEBREW_REPOSITORY"
-
-  if [ $HOMEBREW_PREFIX != $HOMEBREW_REPOSITORY ]; then
-    ln -sf "$HOMEBREW_REPOSITORY/bin/brew" "$HOMEBREW_PREFIX/bin/brew"
-  fi
-
-  # Download Homebrew.
-  export GIT_DIR="$HOMEBREW_REPOSITORY/.git" GIT_WORK_TREE="$HOMEBREW_REPOSITORY"
-  git init -q
-  git config remote.origin.url "https://github.com/Homebrew/brew"
-  git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-  git fetch -q --tags --force
-  git reset -q --hard origin/master
-  unset GIT_DIR GIT_WORK_TREE
-  echo "Ok"
-
-
-  # Update Homebrew.
-  export PATH="$HOMEBREW_PREFIX/bin:$PATH"
-  echo "Updating Homebrew:"
-  brew update --quiet
-  echo "Ok"
-
   if [ "${CHEZMOI_ARCH}" == "arm64" ]; then
     echo "Install Rosetta 2"
     sudo softwareupdate --install-rosetta --agree-to-license
@@ -135,5 +57,4 @@ if [ "${CHEZMOI_OS}" == "darwin" ]; then
       echo "Ok"
     fi
   fi
-
 fi
