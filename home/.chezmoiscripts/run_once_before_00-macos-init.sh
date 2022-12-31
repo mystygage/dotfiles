@@ -42,19 +42,28 @@ if [ "${CHEZMOI_OS}" == "darwin" ]; then
     fi
   fi
 
+  # Check if the Xcode license is agreed to and agree if not.
+  xcode_license() {
+    if /usr/bin/xcrun clang 2>&1 | grep -q license; then
+      echo "Asking for Xcode license confirmation:"
+      sudo xcodebuild -license
+    fi
+  }
+  xcode_license
+
   if [ "${CHEZMOI_ARCH}" == "arm64" ]; then
     echo "Install Rosetta 2"
     sudo softwareupdate --install-rosetta --agree-to-license
+  fi
 
-    # Check and install any remaining software updates.
-    echo "Checking for software updates:"
-    if softwareupdate -l 2>&1 | grep -q "No new software available."; then
-      echo "Ok"
-    else
-      echo "Installing software updates:"
-      sudo softwareupdate --install --all
-      xcode_license
-      echo "Ok"
-    fi
+  # Check and install any remaining software updates.
+  echo "Checking for software updates:"
+  if softwareupdate -l 2>&1 | grep -q "No new software available."; then
+    echo "Ok"
+  else
+    echo "Installing software updates:"
+    sudo softwareupdate --install --all
+    xcode_license
+    echo "Ok"
   fi
 fi
