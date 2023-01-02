@@ -80,7 +80,7 @@ alias kfn='kubectl config set-context --current --namespace "$(kubectl get ns -o
 
 source "${HOME}/.local/bin/load-k8s-configs.sh"
 
-if ! type "kubectl" > /dev/null; then
+if type "kubectl" > /dev/null; then
   source <(kubectl completion zsh)
 fi
 
