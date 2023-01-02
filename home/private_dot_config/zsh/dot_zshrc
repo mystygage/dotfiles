@@ -79,7 +79,10 @@ alias kfc='kubectl config use-context $(kubectl config get-contexts -o name | fz
 alias kfn='kubectl config set-context --current --namespace "$(kubectl get ns -o name | fzf -d/ --with-nth=2 | cut -d/ -f2)"'
 
 source "${HOME}/.local/bin/load-k8s-configs.sh"
-source <(kubectl completion zsh)
+
+if ! type "kubectl" > /dev/null; then
+  source <(kubectl completion zsh)
+fi
 
 # To customize prompt, run `p10k configure` or edit "${ZDOTDIR:-$HOME}/.p10k.zsh".
 [[ ! -f "${ZDOTDIR:-$HOME}/.p10k.zsh" ]] || source "${ZDOTDIR:-$HOME}/.p10k.zsh"
