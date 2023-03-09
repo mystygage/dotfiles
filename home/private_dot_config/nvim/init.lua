@@ -1,6 +1,2 @@
--- Neo Vim setup with Lua
-
--- Import Lua modules
-require('plugins-init')
-require('base/options')
-require('base/keymaps')
+-- bootstrap lazy.nvim, LazyVim and your plugins
+require("config.lazy")
