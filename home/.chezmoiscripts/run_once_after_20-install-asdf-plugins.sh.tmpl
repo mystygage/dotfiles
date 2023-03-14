@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+{{ template "script_eval_brew" . }}
 
 $(brew --prefix asdf)/bin/asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 
