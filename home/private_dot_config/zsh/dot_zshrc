@@ -57,11 +57,11 @@ alias vim="nvim"
 alias vi="nvim"
 alias oldvim="\vim"
 
-# exa instead of ls (https://the.exa.website/)
-alias l='exa'
-alias la='exa -a'
-alias ll='exa -lah'
-alias ls='exa --color=auto'
+# eza instead of ls (https://github.com/eza-community/eza)
+alias l='eza'
+alias la='eza -a'
+alias ll='eza -lah'
+alias ls='eza --color=auto'
 
 # Maven alias to support XDG Base Directory specification
 # https://issues.apache.org/jira/browse/MNG-6603
