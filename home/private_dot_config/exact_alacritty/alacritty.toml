@@ -1,0 +1,13 @@
+# Configuration for Alacritty, the GPU enhanced terminal emulator.
+# Documentation: https://alacritty.org/config-alacritty.html
+
+import = ["~/.config/alacritty/dracula.toml"]
+
+[window]
+padding = { x = 15, y = 15 }
+decorations = "Buttonless"
+
+# Font configuration (changes require restart)
+[font]
+normal = { family = "MesloLGS NF" }
+size = 18.0

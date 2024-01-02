@@ -1,6 +1,6 @@
-'.config/alacritty/dracula.yaml':
+'.config/alacritty/dracula.toml':
   type: file
-  url: https://raw.githubusercontent.com/dracula/alacritty/master/dracula.yml
+  url: https://raw.githubusercontent.com/dracula/alacritty/master/dracula.toml
   refreshPeriod: 168h
 'Library/Fonts/MesloLGS NF Bold.ttf':
   type: file
