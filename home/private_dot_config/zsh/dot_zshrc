@@ -37,7 +37,8 @@ SAVEHIST=100000
 [ -f ~/.config/fzf/fzf.zsh ] && source ~/.config/fzf/fzf.zsh
 
 # asdf version manager
-source $(brew --prefix asdf)/libexec/asdf.sh
+# set Go Env
+[ -f "${ASDF_DATA_DIR}"/plugins/golang/set-env.zsh ] && source "${ASDF_DATA_DIR}"/plugins/golang/set-env.zsh
 
 # Set Java Home
 [ -f "${ASDF_DATA_DIR}"/plugins/java/set-java-home.zsh ] && source "${ASDF_DATA_DIR}"/plugins/java/set-java-home.zsh
