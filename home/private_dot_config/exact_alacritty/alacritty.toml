@@ -7,6 +7,7 @@ import = ["~/.config/alacritty/dracula.toml"]
 [window]
 padding = { x = 15, y = 15 }
 decorations = "buttonless"
+option_as_alt = "Both"
 
 # Font configuration (changes require restart)
 [font]
