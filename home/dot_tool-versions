@@ -1,4 +1,4 @@
-nodejs 22.14.0
-java temurin-jre-21.0.5+11.0.LTS
-python 3.13.0t
-golang 1.24.2
+nodejs 22.19.0
+java temurin-jre-21.0.8+9.0.LTS
+python 3.13.7t
+golang 1.25.1
