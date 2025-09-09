@@ -1,0 +1,7 @@
+# Check if Full Disk Access is granted by trying to read a protected file
+if ! plutil -lint /Library/Preferences/com.apple.TimeMachine.plist >/dev/null; then
+  echo "❗️ This script requires Full Disk Access for Terminal or the executing application."
+  # Open the System Settings to the Full Disk Access section
+  open "x-apple.systempreferences:com.apple.preference.security?Privacy_All"
+  exit 1
+fi
