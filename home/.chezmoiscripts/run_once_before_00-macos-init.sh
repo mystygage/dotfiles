@@ -51,11 +51,6 @@ if [ "${CHEZMOI_OS}" == "darwin" ]; then
   }
   xcode_license
 
-  if [ "${CHEZMOI_ARCH}" == "arm64" ]; then
-    echo "Install Rosetta 2"
-    sudo softwareupdate --install-rosetta --agree-to-license
-  fi
-
   # Check and install any remaining software updates.
   echo "Checking for software updates:"
   if softwareupdate -l 2>&1 | grep -q "No new software available."; then

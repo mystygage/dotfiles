@@ -5,12 +5,12 @@ personal dotfiles, managed with [`chezmoi`](https://github.com/twpayne/chezmoi).
 ## Setup
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io/lb)" -- init --apply mystygage --purge-binary
+curl -fsSL https://raw.githubusercontent.com/mystygage/dotfiles/main/bootstrap.sh | sh
 ```
 
 ## Details
 
-The script assumes that [`brew`](https://brew.sh) is already installed.
+The bootstrap script installs brew and chezmoi.
 
 - all config files are stored in `XDG_CONFIG_HOME` which defaults to `~/.config`
 - install tools and apps with Homebrew
