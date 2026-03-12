@@ -8,8 +8,14 @@ import = ["~/.config/alacritty/dracula.toml"]
 padding = { x = 15, y = 15 }
 decorations = "buttonless"
 option_as_alt = "Both"
+resize_increments = true
 
 # Font configuration (changes require restart)
 [font]
 normal = { family = "MesloLGS NF" }
 size = 18.0
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001b\r"
