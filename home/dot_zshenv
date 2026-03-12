@@ -4,4 +4,8 @@
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}"
 export ZDOTDIR="${ZDOTDIR:=$XDG_CONFIG_HOME/zsh}"
+
+# Don't show homebrew hints
+export HOMEBREW_NO_ENV_HINTS=1
+
 source "$ZDOTDIR/.zshenv"
