@@ -9,10 +9,18 @@ fi
 # Executes commands at the start of an interactive session.
 #
 
+# Cache Homebrew prefix to avoid repeated `brew --prefix` calls (~50ms each)
+if [[ -z "$HOMEBREW_PREFIX" ]]; then
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    export HOMEBREW_PREFIX=/opt/homebrew
+  elif [[ -x /usr/local/bin/brew ]]; then
+    export HOMEBREW_PREFIX=/usr/local
+  fi
+fi
+
 # Homebrew's zsh completions must be inserted in `FPATH` before zprezto init
-if type brew &>/dev/null
-then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+  FPATH="${HOMEBREW_PREFIX}/share/zsh/site-functions:${FPATH}"
 fi
 
 # Source Prezto.
@@ -43,15 +51,29 @@ SAVEHIST=100000
 # Set Java Home
 [ -f "${ASDF_DATA_DIR}"/plugins/java/set-java-home.zsh ] && source "${ASDF_DATA_DIR}"/plugins/java/set-java-home.zsh
 
+# Cache shell-init evals to avoid spawning subprocesses on every startup.
+_zsh_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+[[ -d "$_zsh_cache_dir" ]] || mkdir -p "$_zsh_cache_dir"
+
+_cached_eval() {
+  # $1 = cache filename, $2... = command to produce the eval output
+  local cache="${_zsh_cache_dir}/$1"; shift
+  if [[ ! -s "$cache" ]]; then
+    "$@" >| "$cache" 2>/dev/null
+  fi
+  source "$cache"
+}
+
 # Jump, `cd` on steroids
 # Usage: `j dotfiles` instead of `cd ~/Projects/private/dotfiles`
-eval "$(jump shell)"
+_cached_eval jump.zsh jump shell
 
 # 1Password CLI
-eval "$(op completion zsh)"; compdef _op op
+_cached_eval op-completion.zsh op completion zsh
+compdef _op op
 
 # use yubikey agent
-export SSH_AUTH_SOCK="$(brew --prefix)/var/run/yubikey-agent.sock"
+export SSH_AUTH_SOCK="${HOMEBREW_PREFIX}/var/run/yubikey-agent.sock"
 
 # use nvim instead of vim/vi
 alias vim="nvim"
@@ -82,7 +104,7 @@ alias kfn='kubectl config set-context --current --namespace "$(kubectl get ns -o
 source "${HOME}/.local/bin/load-k8s-configs.sh"
 
 if type "kubectl" > /dev/null; then
-  source <(kubectl completion zsh)
+  _cached_eval kubectl-completion.zsh kubectl completion zsh
 fi
 
 # Redraw prompt on terminal resize

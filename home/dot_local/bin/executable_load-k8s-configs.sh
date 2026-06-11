@@ -11,10 +11,29 @@ fi
 ADD_KUBECONFIG_FILES="$HOME/.kube/config-files"
 mkdir -p "${ADD_KUBECONFIG_FILES}"
 
-OIFS="$IFS"
-IFS=$'\n'
-for kubeconfigFile in `find "${ADD_KUBECONFIG_FILES}" -type f -name "*.yml" -o -name "*.yaml"`
-do
-    export KUBECONFIG="$kubeconfigFile:$KUBECONFIG"
-done
-IFS="$OIFS"
+# Cache the assembled KUBECONFIG list and only rebuild when the directory
+# mtime changes (avoids a `find` on every shell startup).
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+CACHE_FILE="${CACHE_DIR}/kubeconfig-list"
+STAMP_FILE="${CACHE_DIR}/kubeconfig-list.stamp"
+mkdir -p "${CACHE_DIR}"
+
+current_stamp=$(stat -f %m "${ADD_KUBECONFIG_FILES}" 2>/dev/null || stat -c %Y "${ADD_KUBECONFIG_FILES}" 2>/dev/null)
+cached_stamp=$(cat "${STAMP_FILE}" 2>/dev/null)
+
+if [[ ! -s "${CACHE_FILE}" || "${current_stamp}" != "${cached_stamp}" ]]; then
+  extra=""
+  OIFS="$IFS"
+  IFS=$'\n'
+  for kubeconfigFile in $(find "${ADD_KUBECONFIG_FILES}" -type f \( -name "*.yml" -o -name "*.yaml" \)); do
+    extra="${kubeconfigFile}:${extra}"
+  done
+  IFS="$OIFS"
+  printf '%s' "${extra}" >| "${CACHE_FILE}"
+  printf '%s' "${current_stamp}" >| "${STAMP_FILE}"
+fi
+
+extra_configs=$(cat "${CACHE_FILE}")
+if [[ -n "${extra_configs}" ]]; then
+  export KUBECONFIG="${extra_configs}${KUBECONFIG}"
+fi
