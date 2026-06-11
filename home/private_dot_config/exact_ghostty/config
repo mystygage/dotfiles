@@ -11,7 +11,6 @@ window-padding-y = 15
 window-padding-balance = true
 
 macos-titlebar-style = hidden
-macos-option-as-alt = true
 
 window-step-resize = true
 
