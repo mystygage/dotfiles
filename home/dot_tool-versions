@@ -2,3 +2,4 @@ nodejs 24.11.1
 java temurin-jre-25.0.1+8.0.LTS
 python 3.14.0t
 golang 1.25.4
+bun 1.3.11
