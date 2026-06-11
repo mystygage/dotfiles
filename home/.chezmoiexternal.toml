@@ -1,7 +1,3 @@
-['.config/alacritty/dracula.toml']
-  type = "file"
-  url = "https://raw.githubusercontent.com/dracula/alacritty/master/dracula.toml"
-  refreshPeriod = "168h"
 ['Library/Fonts/MesloLGS NF Bold.ttf']
   type = "file"
   url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
