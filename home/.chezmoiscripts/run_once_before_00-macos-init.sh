@@ -15,8 +15,15 @@ if [ "${CHEZMOI_OS}" == "darwin" ]; then
   XDG_CACHE_FOLDER="${HOME}/Library/Caches/XDG-cache"
   HOME_CACHE_FOLDER="${HOME}/.cache"
   if [ ! -L "${HOME_CACHE_FOLDER}" ] ; then
-    mkdir -p "${HOME_CACHE_FOLDER}"
-    mv "${HOME_CACHE_FOLDER}" "${XDG_CACHE_FOLDER}"
+    if [ -e "${XDG_CACHE_FOLDER}" ] ; then
+      # Target already exists: move contents instead of nesting ~/.cache inside it
+      mkdir -p "${HOME_CACHE_FOLDER}"
+      rsync -a "${HOME_CACHE_FOLDER}/" "${XDG_CACHE_FOLDER}/"
+      rm -rf "${HOME_CACHE_FOLDER}"
+    else
+      mkdir -p "${HOME_CACHE_FOLDER}"
+      mv "${HOME_CACHE_FOLDER}" "${XDG_CACHE_FOLDER}"
+    fi
     ln -s "${XDG_CACHE_FOLDER}" "${HOME_CACHE_FOLDER}"
   fi
 
