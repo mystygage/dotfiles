@@ -69,11 +69,13 @@ _cached_eval() {
 _cached_eval jump.zsh jump shell
 
 # 1Password CLI
-_cached_eval op-completion.zsh op completion zsh
-compdef _op op
+if command -v op &>/dev/null; then
+  _cached_eval op-completion.zsh op completion zsh
+  compdef _op op
+fi
 
 # use yubikey agent
-export SSH_AUTH_SOCK="${HOMEBREW_PREFIX}/var/run/yubikey-agent.sock"
+[[ -S "${HOMEBREW_PREFIX}/var/run/yubikey-agent.sock" ]] && export SSH_AUTH_SOCK="${HOMEBREW_PREFIX}/var/run/yubikey-agent.sock"
 
 # use nvim instead of vim/vi
 alias vim="nvim"
@@ -101,7 +103,7 @@ alias kn='kubectl config set-context --current --namespace'
 alias kfc='kubectl config use-context $(kubectl config get-contexts -o name | fzf --height=6 --prompt="Kubernetes Context> ")'
 alias kfn='kubectl config set-context --current --namespace "$(kubectl get ns -o name | fzf -d/ --with-nth=2 | cut -d/ -f2)"'
 
-source "${HOME}/.local/bin/load-k8s-configs.sh"
+[[ -f "${HOME}/.local/bin/load-k8s-configs.sh" ]] && source "${HOME}/.local/bin/load-k8s-configs.sh"
 
 if type "kubectl" > /dev/null; then
   _cached_eval kubectl-completion.zsh kubectl completion zsh
