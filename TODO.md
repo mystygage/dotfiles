@@ -47,33 +47,41 @@ Findings from review on 2026-05-13. Ordered by severity.
 
 ## P3 — Inconsistencies / cleanup
 
-- [ ] **`0-macos-init` doesn't use `script_darwin_only` template**
+- [x] **`0-macos-init` doesn't use `script_darwin_only` template**
   Wraps 60+ lines in `if [ "${CHEZMOI_OS}" == "darwin" ]; then … fi`. Inconsistent with other scripts, silently no-ops on Linux instead of `exit 0`.
+  Done: converted to `.tmpl`, uses `script_darwin_only` and `script_sudo`.
 
-- [ ] **`script_install_mas` is misnamed**
+- [x] **`script_install_mas` is misnamed**
   Doesn't install `mas`, only gates on `.installmas == yes`. Rename to e.g. `script_skip_if_no_mas`.
+  Done: renamed to `script_skip_if_no_mas`.
 
-- [ ] **`[github] user = mystygage` hardcoded**
+- [x] **`[github] user = mystygage` hardcoded**
   `home/private_dot_config/exact_git/config.tmpl:13-14` — `[user]` is templated, github user isn't. Template it or drop the section.
+  Done: section removed (no tool here reads `github.user`).
 
-- [ ] **Dead SourceTree blocks in gitconfig**
+- [x] **Dead SourceTree blocks in gitconfig**
   Lines 23-30 reference SourceTree, which isn't in the brew bundle. Remove.
+  Done: removed.
 
 - [x] **`python 3.14.0t` (free-threaded build)**
   `home/dot_tool-versions:3` — verify if intentional. Many wheels (numpy/pandas/etc.) still don't support the no-GIL build.
   Done in `4e3d1f5`: switched to standard `3.14.8`.
 
-- [ ] **`.chezmoiignore` has orphan entries**
+- [x] **`.chezmoiignore` has orphan entries**
   `home/.chezmoiignore` — `script` and `install.sh` don't exist in `home/`. `README.md` masks `private_dot_config/nvim/{README.md,LICENSE}` (LazyVim starter leftovers). Decide what to keep.
+  Done: `.chezmoiignore` removed (all entries were orphans), LazyVim `README.md` deleted. `LICENSE` kept (Apache-2.0 notice of the starter).
 
-- [ ] **`coreutils` installed but not on PATH**
+- [x] **`coreutils` installed but not on PATH**
   Brew bundle includes it, but nothing adds `$(brew --prefix coreutils)/libexec/gnubin` to `PATH`. Either remove the package or actually use it (would also resolve P1 #2).
+  Done: removed from brew bundle (not needed after the `xargs` finding).
 
-- [ ] **Dead LazyVim example file**
+- [x] **Dead LazyVim example file**
   `home/private_dot_config/nvim/lua/plugins/example.lua` starts with `if true then return {} end`. Never loaded. Delete.
+  Done: deleted.
 
-- [ ] **`chezmoiexternal.toml` refreshes static fonts weekly**
+- [x] **`chezmoiexternal.toml` refreshes static fonts weekly**
   `refreshPeriod = "168h"` on MesloLGS fonts. Set to `0` (never re-download).
+  Done: `refreshPeriod` removed (default `0` = never).
 
 ## Keyboard / Terminal — Umlaute + Zellij-Alt gleichzeitig
 
@@ -95,4 +103,4 @@ Rahmenbedingungen:
 1. ~~P1 #1 (asdf plugins) — blocks fresh setup~~ done
 2. ~~P1 #2-#9~~ done
 3. P2 (commit signing)
-4. P3 cleanup
+4. ~~P3 cleanup~~ done
