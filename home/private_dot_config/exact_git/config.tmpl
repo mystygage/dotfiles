@@ -10,6 +10,12 @@
 [user]
     name = {{ .name }}
     email = {{ .email }}
+    # YubiKey #11514500, PIV slot 9a (yubikey-agent)
+    signingkey = key::ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNBZ7cqeKfSjDDzoiknjrRu8awHHll8/0vR6qHf5gjIat5EEpZHGxtnKYWSS1UV2LizSt8r4TMp4Jvq+5ZQC/1Q=
+[gpg]
+    format = ssh
+[gpg "ssh"]
+    allowedSignersFile = ~/.config/git/allowed_signers
 [init]
     defaultBranch = main
 [advice]
@@ -22,6 +28,9 @@
     conflictstyle = diff3
 [commit]
     verbose = true
+    gpgsign = true
+[tag]
+    gpgsign = true
 [pull]
     rebase = true
 [fetch]
