@@ -50,7 +50,6 @@ chezmoi state delete-bucket --bucket=scriptState && chezmoi apply
   - `executable_` prefix: file gets the executable bit
   - `symlink_` prefix: target is created as a symlink
   - `.tmpl` suffix: processed as Go template
-- `home/.chezmoiignore` excludes source paths from deployment.
 
 ### Key Directories
 
@@ -84,7 +83,7 @@ Helpers in `home/.chezmoitemplates/`:
 - `script_eval_brew`: sets up Homebrew for the current architecture (arm64/x86)
 - `script_sudo`: sudo keep-alive during script execution
 - `script_fda`: aborts unless Full Disk Access is granted
-- `script_install_mas`: exits unless `.installmas == "yes"`
+- `script_skip_if_no_mas`: exits unless `.installmas == "yes"`
 
 ## External Dependencies
 
