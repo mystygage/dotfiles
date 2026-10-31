@@ -10,8 +10,6 @@
 [user]
     name = {{ .name }}
     email = {{ .email }}
-[github]
-    user = mystygage
 [init]
     defaultBranch = main
 [advice]
@@ -20,14 +18,8 @@
     autoSquash = true
     autoStash = true
     updateRefs = true
-[difftool "sourcetree"]
-    cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-    path =
 [merge]
     conflictstyle = diff3
-[mergetool "sourcetree"]
-    cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-    trustExitCode = true
 [commit]
     verbose = true
 [pull]
