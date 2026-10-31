@@ -17,5 +17,8 @@ The script assumes that [`brew`](https://brew.sh) is already installed.
 - basic setup for
   - zsh with prezto
   - neovim
-  - alacritty 
+  - ghostty
   - vscode
+- runtime versions managed with asdf
+
+Guidance for coding agents (Codex, Claude Code) lives in [`AGENTS.md`](AGENTS.md).
