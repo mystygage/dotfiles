@@ -42,8 +42,9 @@ Findings from review on 2026-05-13. Ordered by severity.
 
 ## P2 — Security posture (CTO context)
 
-- [ ] **No git commit signing**
+- [x] **No git commit signing**
   `home/private_dot_config/exact_git/config.tmpl` has no `[commit] gpgsign` / `[gpg] format = ssh`. `yubikey-agent` is already installed — pair it with SSH-signed commits.
+  Done in `dc9f1c1`: SSH signing via yubikey-agent (PIV slot 9a), commits and tags signed by default. Key registered on GitHub as signing key.
 
 ## P3 — Inconsistencies / cleanup
 
@@ -102,5 +103,5 @@ Rahmenbedingungen:
 ## Suggested order
 1. ~~P1 #1 (asdf plugins) — blocks fresh setup~~ done
 2. ~~P1 #2-#9~~ done
-3. P2 (commit signing)
+3. ~~P2 (commit signing)~~ done
 4. ~~P3 cleanup~~ done
