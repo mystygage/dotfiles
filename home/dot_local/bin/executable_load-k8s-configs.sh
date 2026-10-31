@@ -23,12 +23,9 @@ cached_stamp=$(cat "${STAMP_FILE}" 2>/dev/null)
 
 if [[ ! -s "${CACHE_FILE}" || "${current_stamp}" != "${cached_stamp}" ]]; then
   extra=""
-  OIFS="$IFS"
-  IFS=$'\n'
-  for kubeconfigFile in $(find "${ADD_KUBECONFIG_FILES}" -type f \( -name "*.yml" -o -name "*.yaml" \)); do
+  while IFS= read -r -d '' kubeconfigFile; do
     extra="${kubeconfigFile}:${extra}"
-  done
-  IFS="$OIFS"
+  done < <(find "${ADD_KUBECONFIG_FILES}" -type f \( -name "*.yml" -o -name "*.yaml" \) -print0)
   printf '%s' "${extra}" >| "${CACHE_FILE}"
   printf '%s' "${current_stamp}" >| "${STAMP_FILE}"
 fi

@@ -42,12 +42,15 @@ fi
 
 # Start/Init
 if [[ ! -f "$USER_FILE" ]]; then
+  # Pass credentials via environment (name only), so they don't show up in `ps`
+  GARMIN_USERNAME="$(op read op://private/garmin/username)"
+  GARMIN_PASSWORD="$(op read op://private/garmin/password)"
+  export GARMIN_USERNAME GARMIN_PASSWORD
   CMD=(
     docker run -v "$DATA_DIR:/root" --interactive --tty
     --name "$CONTAINER_NAME"
+    -e GARMIN_USERNAME -e GARMIN_PASSWORD
     "$IMAGE"
-    --garmin-username="$(op read op://private/garmin/username)"
-    --garmin-password="$(op read op://private/garmin/password)"
   )
   if [[ -n "$FROMDATE" ]]; then
     CMD+=(--fromdate "$FROMDATE")
