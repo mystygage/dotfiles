@@ -78,6 +78,9 @@ Template data is defined in `home/.chezmoi.toml.tmpl`:
 - `.email`: user's email
 - `.installmas`: `"yes"` to install Mac App Store apps
 
+Static data lives in `home/.chezmoidata.toml` (read on every apply, no `chezmoi init` needed):
+- `.yubikeys`: serial + SSH public key per YubiKey, used for git commit signing (`allowed_signers`)
+
 Helpers in `home/.chezmoitemplates/`:
 - `script_darwin_only`: exits if not on macOS
 - `script_eval_brew`: sets up Homebrew for the current architecture (arm64/x86)

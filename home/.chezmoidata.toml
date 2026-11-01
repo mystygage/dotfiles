@@ -1,0 +1,9 @@
+# YubiKeys (yubikey-agent, PIV slot 9a) allowed to sign git commits.
+# Only type + base64 key matter, serial is a label.
+[[yubikeys]]
+  serial = "11514500"
+  key = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNBZ7cqeKfSjDDzoiknjrRu8awHHll8/0vR6qHf5gjIat5EEpZHGxtnKYWSS1UV2LizSt8r4TMp4Jvq+5ZQC/1Q="
+
+[[yubikeys]]
+  serial = "15285561"
+  key = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFbdDxI/JcQwSsO0KHgm76N9nSPJwTYN3OK4/XVnOj+43RLrmfGjMVfKyvBjIZguD/nC30BKotXWi4uDnHNFleM="
