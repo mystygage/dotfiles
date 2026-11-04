@@ -30,6 +30,10 @@ fi
 
 # Customize to your needs...
 
+# In login shells path_helper and prezto's zprofile moved brew and system paths
+# in front of the shims from zshenv.
+path=("${ASDF_DATA_DIR}/shims" $path)
+
 # Optimize the history
 setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_SPACE
