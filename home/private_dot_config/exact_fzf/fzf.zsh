@@ -1,13 +1,14 @@
 # Setup fzf
 # ---------
-if [[ ! "$PATH" == *$(brew --prefix)/opt/fzf/bin* ]]; then
-  PATH="${PATH:+${PATH}:}$(brew --prefix)/opt/fzf/bin"
-fi
+(( $+commands[fzf] )) || return 0
 
-# Auto-completion
-# ---------------
-[[ $- == *i* ]] && source "$(brew --prefix)/opt/fzf/shell/completion.zsh" 2> /dev/null
-
-# Key bindings
-# ------------
-source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
+# Auto-completion and key bindings
+# --------------------------------
+for _fzf_dir in "${HOMEBREW_PREFIX}/opt/fzf/shell" /usr/share/doc/fzf/examples /usr/share/fzf; do
+  if [[ -r "${_fzf_dir}/key-bindings.zsh" ]]; then
+    [[ $- == *i* ]] && source "${_fzf_dir}/completion.zsh" 2> /dev/null
+    source "${_fzf_dir}/key-bindings.zsh"
+    break
+  fi
+done
+unset _fzf_dir

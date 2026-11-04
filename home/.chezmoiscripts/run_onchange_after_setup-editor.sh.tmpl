@@ -13,6 +13,7 @@
 
 set -eufo pipefail
 
+{{ template "script_darwin_only" . }}
 {{ template "script_eval_brew" . }}
 
 {{ range $extensions -}}

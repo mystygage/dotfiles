@@ -5,7 +5,7 @@ This file is the single source of truth. `CLAUDE.md` only imports it, so edit he
 
 ## Overview
 
-Personal dotfiles for macOS, managed with [chezmoi](https://github.com/twpayne/chezmoi).
+Personal dotfiles for macOS, plus a minimal shell setup for Linux servers and containers, managed with [chezmoi](https://github.com/twpayne/chezmoi).
 Config files follow the XDG Base Directory spec (`~/.config`).
 
 ## Common Commands
@@ -35,7 +35,7 @@ chezmoi state delete-bucket --bucket=scriptState && chezmoi apply
 - `chezmoi apply` writes to the real `$HOME` and may run install scripts with `sudo`. Do not run it unless explicitly asked; use `chezmoi diff` or `chezmoi execute-template` to verify.
 - Edit files in `home/` (the source state), never the deployed files under `~`.
 - Never commit secrets. Credentials come from 1Password (`op`) at runtime.
-- Shell scripts: `#!/usr/bin/env bash` on line 1 (also after template rendering), `set -euo pipefail`, quote variables. Target BSD userland (macOS), not GNU.
+- Shell scripts: `#!/usr/bin/env bash` on line 1 (also after template rendering), `set -euo pipefail`, quote variables. Target BSD userland (macOS), not GNU. Anything deployed to Linux must work with both.
 - Formatting follows `.editorconfig`: UTF-8, LF, 2-space indent, final newline.
 - Commit messages use a `[scope] description` prefix, e.g. `[zsh] improve start up time with caching`.
 - Open findings and planned work live in `TODO.md`. Tick items off there when fixed.
@@ -71,6 +71,15 @@ Package lists are inlined in the scripts, so editing them triggers a re-run:
 - VS Code extensions: `run_onchange_after_setup-editor.sh.tmpl`
 - macOS defaults: `run_onchange_after_macos-settings.sh.tmpl`
 
+## Linux
+
+Target is servers and containers: zsh, prezto and git config only. No Linuxbrew, no commit signing, no packages installed by the dotfiles.
+
+- `home/.chezmoiignore` lists what is skipped on Linux. New macOS-only files go there.
+- Scripts that make no sense on Linux use `script_darwin_only`.
+- In zsh config, guard optional tools with `(( $+commands[tool] ))`. A missing `eza` must not break `ls`.
+- A `run_once` script needing a tool that may arrive later renders empty until `lookPath` finds it. chezmoi skips empty scripts and records nothing, so it runs once the tool exists.
+
 ## Templating
 
 Template data is defined in `home/.chezmoi.toml.tmpl`:
@@ -84,7 +93,7 @@ Static data lives in `home/.chezmoidata.toml` (read on every apply, no `chezmoi 
 
 Helpers in `home/.chezmoitemplates/`:
 - `script_darwin_only`: exits if not on macOS
-- `script_eval_brew`: sets up Homebrew for the current architecture (arm64/x86)
+- `script_eval_brew`: sets up Homebrew for the current architecture (arm64/x86), renders nothing on Linux
 - `script_sudo`: sudo keep-alive during script execution
 - `script_fda`: aborts unless Full Disk Access is granted
 - `script_skip_if_no_mas`: exits unless `.installmas == "yes"`

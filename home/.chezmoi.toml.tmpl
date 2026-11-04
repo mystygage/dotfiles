@@ -15,11 +15,19 @@
 {{-   $email = promptString "email" $email -}}
 {{- end -}}
 
-{{- $installmas := "yes" -}}
+{{- $installmas := "no" -}}
 {{- if hasKey . "installmas" -}}
 {{-   $installmas = .installmas -}}
-{{- else if $interactive -}}
-{{-   $installmas = promptString "Install App Store Apps" $installmas -}}
+{{- else if and $interactive (eq .chezmoi.os "darwin") -}}
+{{-   $installmas = promptChoice "Install App Store Apps" (list "yes" "no") "yes" -}}
+{{- end -}}
+
+{{- /* Both values end up in rendered shell scripts and git config */ -}}
+{{- if regexMatch "[\"'`$\\\\#;]" $name -}}
+{{-   fail (printf "name contains shell or git config metacharacters: %s" $name) -}}
+{{- end -}}
+{{- if not (regexMatch "^[^[:space:]\"'`$\\\\#;@]+@[^[:space:]\"'`$\\\\#;@]+$" $email) -}}
+{{-   fail (printf "not a valid email address: %s" $email) -}}
 {{- end -}}
 
 {{- /* Login window contact. Local config only, this repo is public. Prefilled with the address this Mac shows. */ -}}
