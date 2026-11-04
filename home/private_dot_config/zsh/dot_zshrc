@@ -45,11 +45,22 @@ SAVEHIST=100000
 [ -f ~/.config/fzf/fzf.zsh ] && source ~/.config/fzf/fzf.zsh
 
 # asdf version manager
-# set Go Env
-[ -f "${ASDF_DATA_DIR}"/plugins/golang/set-env.zsh ] && source "${ASDF_DATA_DIR}"/plugins/golang/set-env.zsh
-
-# Set Java Home
-[ -f "${ASDF_DATA_DIR}"/plugins/java/set-java-home.zsh ] && source "${ASDF_DATA_DIR}"/plugins/java/set-java-home.zsh
+# Runtime env for Java and Go. The plugins' own hooks spawn asdf on every prompt,
+# this only runs at startup and on cd.
+_asdf_runtime_env() {
+  local dir
+  if dir="$(asdf where java 2>/dev/null)" && [[ -n "$dir" ]]; then
+    export JAVA_HOME="$dir" JDK_HOME="$dir"
+  fi
+  if dir="$(asdf where golang 2>/dev/null)" && [[ -n "$dir" ]]; then
+    export GOROOT="$dir/go" GOPATH="$dir/packages" GOBIN="$dir/bin"
+  fi
+}
+if (( $+commands[asdf] )); then
+  autoload -U add-zsh-hook
+  add-zsh-hook chpwd _asdf_runtime_env
+  _asdf_runtime_env
+fi
 
 # Cache shell-init evals to avoid spawning subprocesses on every startup.
 _zsh_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
