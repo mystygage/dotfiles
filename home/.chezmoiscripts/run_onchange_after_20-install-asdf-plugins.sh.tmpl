@@ -4,6 +4,9 @@
 
 set -euo pipefail
 
+# Re-runs when the pinned versions change, so a new version gets installed
+# .tool-versions: {{ include "dot_tool-versions" | sha256sum }}
+
 {{ template "script_eval_brew" . }}
 
 # Same locations as zshenv: a fresh apply runs before any shell has read it
