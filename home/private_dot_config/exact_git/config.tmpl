@@ -8,8 +8,8 @@
     process = git-lfs filter-process
     required = true
 [user]
-    name = {{ .name }}
-    email = {{ .email }}
+    name = {{ .name | quote }}
+    email = {{ .email | quote }}
 [gpg]
     format = ssh
 [gpg "ssh"]
@@ -28,9 +28,11 @@
     conflictstyle = diff3
 [commit]
     verbose = true
+{{- if eq .chezmoi.os "darwin" }}
     gpgsign = true
 [tag]
     gpgsign = true
+{{- end }}
 [pull]
     rebase = true
 [fetch]

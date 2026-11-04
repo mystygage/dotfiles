@@ -66,7 +66,7 @@ _cached_eval() {
 
 # Jump, `cd` on steroids
 # Usage: `j dotfiles` instead of `cd ~/Projects/private/dotfiles`
-_cached_eval jump.zsh jump shell
+(( $+commands[jump] )) && _cached_eval jump.zsh jump shell
 
 # 1Password CLI
 if command -v op &>/dev/null; then
@@ -78,23 +78,41 @@ fi
 [[ -S "${HOMEBREW_PREFIX}/var/run/yubikey-agent.sock" ]] && export SSH_AUTH_SOCK="${HOMEBREW_PREFIX}/var/run/yubikey-agent.sock"
 
 # use nvim instead of vim/vi
-alias vim="nvim"
-alias vi="nvim"
-alias oldvim="\vim"
+if (( $+commands[nvim] )); then
+  alias vim="nvim"
+  alias vi="nvim"
+  alias oldvim="\vim"
+else
+  # zshenv defaults to nvim, fall back on hosts without it
+  export EDITOR='vi' VISUAL='vi'
+fi
 
 # eza instead of ls (https://github.com/eza-community/eza)
-alias l='eza'
-alias la='eza -a'
-alias ll='eza -lah'
-alias ls='eza --color=auto'
+if (( $+commands[eza] )); then
+  alias l='eza'
+  alias la='eza -a'
+  alias ll='eza -lah'
+  alias ls='eza --color=auto'
+fi
 
 # Maven alias to support XDG Base Directory specification
 # https://issues.apache.org/jira/browse/MNG-6603
-alias mvn='mvn -gs "${XDG_CONFIG_HOME}"/maven/settings.xml'
+[[ -f "${XDG_CONFIG_HOME}/maven/settings.xml" ]] && alias mvn='mvn -gs "${XDG_CONFIG_HOME}"/maven/settings.xml'
 
 # Git Alias
-alias gcleanremote="git branch -vv | grep ': gone]' | grep -v '\*' | awk '{ print $1; }' | xargs -r git branch -d"
-alias gcleanlocal='git branch --merged main | grep -v "^\* main" | xargs -n 1 -r git branch -d'
+# Delete local branches whose upstream is gone
+gcleanremote() {
+  git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads \
+    | awk '$2 == "[gone]" { print $1 }' \
+    | xargs -r git branch -d
+}
+
+# Delete local branches merged into main, keep the long-lived ones
+gcleanlocal() {
+  git for-each-ref --merged main --format='%(refname:short)' refs/heads \
+    | grep -vxE 'main|master|develop' \
+    | xargs -r git branch -d
+}
 
 # Kubernetes
 alias k='kubectl'
@@ -103,9 +121,8 @@ alias kn='kubectl config set-context --current --namespace'
 alias kfc='kubectl config use-context $(kubectl config get-contexts -o name | fzf --height=6 --prompt="Kubernetes Context> ")'
 alias kfn='kubectl config set-context --current --namespace "$(kubectl get ns -o name | fzf -d/ --with-nth=2 | cut -d/ -f2)"'
 
-[[ -f "${HOME}/.local/bin/load-k8s-configs.sh" ]] && source "${HOME}/.local/bin/load-k8s-configs.sh"
-
-if type "kubectl" > /dev/null; then
+if (( $+commands[kubectl] )); then
+  [[ -f "${HOME}/.local/bin/load-k8s-configs.sh" ]] && source "${HOME}/.local/bin/load-k8s-configs.sh"
   _cached_eval kubectl-completion.zsh kubectl completion zsh
 fi
 

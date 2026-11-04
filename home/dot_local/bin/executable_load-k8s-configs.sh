@@ -18,7 +18,8 @@ CACHE_FILE="${CACHE_DIR}/kubeconfig-list"
 STAMP_FILE="${CACHE_DIR}/kubeconfig-list.stamp"
 mkdir -p "${CACHE_DIR}"
 
-current_stamp=$(stat -f %m "${ADD_KUBECONFIG_FILES}" 2>/dev/null || stat -c %Y "${ADD_KUBECONFIG_FILES}" 2>/dev/null)
+# GNU first: GNU `stat -f` means filesystem stats and pollutes stdout, BSD `stat -c` fails cleanly
+current_stamp=$(stat -c %Y "${ADD_KUBECONFIG_FILES}" 2>/dev/null || stat -f %m "${ADD_KUBECONFIG_FILES}" 2>/dev/null)
 cached_stamp=$(cat "${STAMP_FILE}" 2>/dev/null)
 
 if [[ ! -s "${CACHE_FILE}" || "${current_stamp}" != "${cached_stamp}" ]]; then

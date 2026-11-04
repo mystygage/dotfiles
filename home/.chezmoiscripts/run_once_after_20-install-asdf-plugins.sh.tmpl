@@ -1,13 +1,20 @@
+{{- /* Linux is opt-in: renders empty until asdf exists, so it runs once it does */ -}}
+{{- if or (eq .chezmoi.os "darwin") (lookPath "asdf") -}}
 #!/usr/bin/env bash
 
 set -euo pipefail
 
 {{ template "script_eval_brew" . }}
 
-$(brew --prefix asdf)/bin/asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-$(brew --prefix asdf)/bin/asdf plugin add java https://github.com/halcyon/asdf-java.git
-$(brew --prefix asdf)/bin/asdf plugin add python https://github.com/asdf-community/asdf-python.git
-$(brew --prefix asdf)/bin/asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
-$(brew --prefix asdf)/bin/asdf plugin add bun https://github.com/cometkim/asdf-bun.git
+# Same locations as zshenv: a fresh apply runs before any shell has read it
+export ASDF_CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/asdf/asdfrc"
+export ASDF_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/asdf"
 
-$(brew --prefix asdf)/bin/asdf install
+asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+asdf plugin add java https://github.com/halcyon/asdf-java.git
+asdf plugin add python https://github.com/asdf-community/asdf-python.git
+asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
+asdf plugin add bun https://github.com/cometkim/asdf-bun.git
+
+asdf install
+{{ end -}}

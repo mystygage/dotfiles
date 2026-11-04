@@ -1,3 +1,5 @@
+{{- /* Renders empty until both exist, so it runs once they do */ -}}
+{{- if and (lookPath "git") (lookPath "zsh") -}}
 #!/usr/bin/env bash
 
 set -euo pipefail
@@ -8,3 +10,4 @@ REPO=https://github.com/sorin-ionescu/prezto.git
 if [ ! -d "${PREZTODIR}" ]; then
   git clone --recursive "${REPO}" "${PREZTODIR}"
 fi
+{{ end -}}

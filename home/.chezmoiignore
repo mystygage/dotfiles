@@ -1,0 +1,16 @@
+{{- if ne .chezmoi.os "darwin" }}
+Library
+Library/**
+.config/ghostty
+.config/ghostty/**
+.config/zed
+.config/zed/**
+.local/bin/idea
+.local/bin/update-brew
+.local/bin/sync-withings-garmin.sh
+.config/nvim
+.config/nvim/**
+.config/asdf
+.config/asdf/**
+.tool-versions
+{{- end }}
