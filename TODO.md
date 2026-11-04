@@ -47,8 +47,9 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
   `run_onchange_after_macos-settings.sh.tmpl:28` rendered the GitHub noreply address and overwrote any working text on re-run.
   Done: `.lostcontact` lives in the local config only, prefilled from the address the Mac already shows. Empty leaves the text alone.
 
-- [ ] **Withings: credentials persist in a kept container**
+- [x] **Withings: credentials persist in a kept container**
   `executable_sync-withings-garmin.sh:50-60`. No `--rm`, and `docker start` reuses containers created before the env var change, with the password in their args. Also: `:master` is a mutable tag on a third-party image that receives credentials, and `DATA_DIR` is created with default permissions.
+  Done: `--rm`, old containers are removed on the next run, image pinned by digest, `DATA_DIR` is 0700. Fetches credentials from 1Password on every run.
 
 - [x] **Version guard is inert**
   `.chezmoiversion` at the repo root is not read once the config sets `sourceDir` to `home/`. Moved to `home/`.
@@ -59,8 +60,9 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
   `home/.chezmoi.toml.tmpl`: `ja` for `installmas` silently means no. `$(...)` in `.name` executes in the rendered macOS script, `#` truncates `user.name` in git config.
   Done: `promptChoice` for `installmas`, `name` and `email` are validated, git config values are quoted.
 
-- [ ] **`--fromdate` is silently ignored once state exists**
-  `executable_sync-withings-garmin.sh:44-60`. Fail instead, and validate the format.
+- [x] **`--fromdate` is silently ignored once state exists**
+  `executable_sync-withings-garmin.sh`.
+  Done: every run starts a new container, so it always applies. The format is validated.
 
 - [ ] **`kfn` clears the namespace when fzf is cancelled**
   `dot_zshrc`. From reading the code, `kubectl` was not available to test.
@@ -76,11 +78,12 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
 - [ ] **Re-runs have side effects**
   Any edit to `macos-settings` wipes the Dock (line 66). Any edit to `00-macos-init` runs `softwareupdate --install --all` in the `before` phase, where a failure blocks deployment. Move one-time steps to their own script.
 
-- [ ] **asdf shims lose to Homebrew on macOS**
-  `path_helper` and prezto's `zprofile` move system and brew paths in front of the `zshenv` entries, so `python3` is brew's, not `.tool-versions`. Re-add the shims after prezto in `.zshrc`. Keep `~/.local/bin` behind system paths.
+- [x] **`PATH` order differs between login and non-login shells**
+  Login shells: `path_helper` and prezto's `zprofile` move system and brew paths in front of the `zshenv` entries, so `python3` is brew's, not `.tool-versions`. Non-login children such as zellij panes skip both, so `~/.local/bin` and the shims come first. The same command can resolve differently per pane. Set one order for both at the end of `.zshrc`, with the shims in front of brew and `~/.local/bin` behind system paths.
+  Done: `zshenv` and `.zshrc` set shims, brew, system, user dirs. `zsh -lc` reads no `.zshrc`, so the shims stay behind brew there.
 
 - [ ] **Unpinned code from third parties**
-  Prezto clone (unpinned on install, then never updated), font externals (`raw/master`, no `checksum.sha256`), asdf plugins, Withings image.
+  Prezto clone (unpinned on install, then never updated), font externals (`raw/master`, no `checksum.sha256`), asdf plugins. The Withings image is pinned to the 2025-08 build: update it on purpose, newer builds change the Garmin session format.
 
 - [ ] **No gate in front of a public repo**
   Add CI: gitleaks, shellcheck on rendered scripts, the Linux smoke test.
@@ -99,7 +102,7 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
   `TERM=xterm-ghostty` is usually unknown on servers. Set `shell-integration-features = ssh-env` in the Ghostty config. Default is off in 1.4.0, not tested against a server.
 
 - [ ] **Smaller items**
-  `HOMEBREW_NO_ANALYTICS=1`. `transfer.fsckObjects = true` (old repos may fail). `script_sudo` keeps sudo open for every cask post-install and lingers up to 60s. `defaultKeyCommand` takes the first ECDSA key without checking `allowed_signers`. `_cached_eval` never invalidates. `brew bundle` list has drifted from installed casks (e.g. `zed`). Hot corner comment at `macos-settings:93` is wrong, and hot corners are written after `killall Dock`.
+  `HOMEBREW_NO_ANALYTICS=1`. `transfer.fsckObjects = true` (old repos may fail). `script_sudo` keeps sudo open for every cask post-install and lingers up to 60s. `defaultKeyCommand` takes the first ECDSA key without checking `allowed_signers`. `_cached_eval` never invalidates. `brew bundle` list has drifted from installed casks (e.g. `zed`). `~/.config/homebrew/trust.json` is not managed, so `brew cu` should need `brew trust --command buo/cask-upgrade/cu` on a new Mac (from Homebrew's source, not tested on one). Hot corner comment at `macos-settings:93` is wrong, and hot corners are written after `killall Dock`.
 
 ## Review 2026-05-13
 
