@@ -22,6 +22,24 @@
 {{-   $installmas = promptString "Install App Store Apps" $installmas -}}
 {{- end -}}
 
+{{- /* Login window contact. Local config only, this repo is public. Prefilled with the address this Mac shows. */ -}}
+{{- $lostcontact := "" -}}
+{{- if hasKey . "lostcontact" -}}
+{{-   $lostcontact = .lostcontact -}}
+{{- else if eq .chezmoi.os "darwin" -}}
+{{-   $current := output "sh" "-c" "defaults read /Library/Preferences/com.apple.loginwindow LoginwindowText 2>/dev/null || true" -}}
+{{-   $lostcontact = regexFind "[^[:space:]]+@[^[:space:]]+[^[:space:].]" $current -}}
+{{-   if contains "noreply" $lostcontact -}}
+{{-     $lostcontact = "" -}}
+{{-   end -}}
+{{-   if $interactive -}}
+{{-     $lostcontact = promptString "Contact on the login window, empty keeps the current text" $lostcontact -}}
+{{-   end -}}
+{{- end -}}
+{{- if and $lostcontact (not (regexMatch "^[^[:space:]\"'`$\\\\#;@]+@[^[:space:]\"'`$\\\\#;@]+$" $lostcontact)) -}}
+{{-   fail (printf "lostcontact is not a valid email address: %s" $lostcontact) -}}
+{{- end -}}
+
 {{- if $interactive -}}
 {{-   writeToStdout "💡 Tip: you can re-enter your name and email with `chezmoi init --data=false`.\n" -}}
 {{- end -}}
@@ -32,3 +50,4 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
   name = {{ $name | quote }}
   email = {{ $email | quote }}
   installmas = {{ $installmas | quote }}
+  lostcontact = {{ $lostcontact | quote }}
