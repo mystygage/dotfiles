@@ -16,7 +16,10 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:=$HOME/.local/state}"
 export ASDF_CONFIG_FILE="${XDG_CONFIG_HOME}/asdf/asdfrc"
 export ASDF_DATA_DIR="${XDG_DATA_HOME}/asdf"
 
-export PATH="${HOME}/.local/bin:${HOME}/.docker/bin/:${ASDF_DATA_DIR}/shims:$PATH"
+# One order for login and non-login shells: shims first so .tool-versions wins,
+# user dirs last so they can't shadow system tools.
+typeset -gU path
+path=("${ASDF_DATA_DIR}/shims" ${path:#${HOME}/(.local/bin|.docker/bin(|/))} "${HOME}/.local/bin" "${HOME}/.docker/bin")
 
 # use neovim as default editor
 export EDITOR='nvim'
