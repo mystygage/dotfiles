@@ -77,6 +77,7 @@ Template data is defined in `home/.chezmoi.toml.tmpl`:
 - `.name`: user's full name
 - `.email`: user's email
 - `.installmas`: `"yes"` to install Mac App Store apps
+- `.lostcontact`: contact on the macOS login window. Local config only, never commit it: this repo is public. Empty leaves the current text alone.
 
 Static data lives in `home/.chezmoidata.toml` (read on every apply, no `chezmoi init` needed):
 - `.yubikeys`: serial + SSH public key per YubiKey, used for git commit signing (`allowed_signers`)
