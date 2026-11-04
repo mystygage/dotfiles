@@ -20,6 +20,7 @@ On macOS the script assumes that [`brew`](https://brew.sh) is already installed.
   - ghostty
   - vscode
 - runtime versions managed with asdf
+- pending macOS updates are listed, installing them stays manual
 
 ## Linux servers and containers
 

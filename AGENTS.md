@@ -71,6 +71,10 @@ Package lists are inlined in the scripts, so editing them triggers a re-run:
 - VS Code extensions: `run_onchange_after_setup-editor.sh.tmpl`
 - macOS defaults: `run_onchange_after_macos-settings.sh.tmpl`
 
+Security settings (firewall, screen lock, TouchID) live in `run_onchange_after_macos-security.sh.tmpl`. That script reads the real state and only changes what differs.
+
+`run_once` and `run_onchange` scripts fire again whenever their rendered content changes, so they must be safe to re-run. A destructive one-time step gets its own small script, like `run_once_after_30-macos-dock.sh.tmpl`.
+
 ## Linux
 
 Target is servers and containers: zsh, prezto and git config only. No Linuxbrew, no commit signing, no packages installed by the dotfiles.

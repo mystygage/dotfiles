@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+{{ template "script_darwin_only" . }}
+
+# Settings that can look fine and still do nothing. Every step reads the real
+# state and only changes what differs, so a re-run without changes needs no sudo.
+FAILED=0
+
+## Firewall
+
+# macOS 15+ no longer honors the com.apple.alf plist
+FW=/usr/libexec/ApplicationFirewall/socketfilterfw
+firewall_on() { [[ "$("$FW" --getglobalstate)" == *"State = "[12]* ]]; }
+stealth_on() {
+  local state
+  state="$("$FW" --getstealthmode)"
+  [[ "$state" == *" on"* || "$state" == *enabled* ]]
+}
+
+firewall_on || sudo "$FW" --setglobalstate on >/dev/null
+stealth_on || sudo "$FW" --setstealthmode on >/dev/null
+if ! firewall_on || ! stealth_on; then
+  echo "❗️ Firewall or stealth mode is not on: $("$FW" --getglobalstate) $("$FW" --getstealthmode)"
+  FAILED=1
+fi
+
+## Screen lock
+
+# The com.apple.screensaver askForPassword keys are unreliable since macOS 10.13
+screenlock_immediate() { [[ "$(sysadminctl -screenLock status 2>&1)" == *"delay is immediate"* ]]; }
+
+if ! screenlock_immediate; then
+  if [ -t 0 ]; then
+    echo "Setting the screen lock to immediate, sysadminctl asks for your login password:"
+    sysadminctl -screenLock immediate -password - || true
+  fi
+  if ! screenlock_immediate; then
+    echo "❗️ Screen lock is not immediate. Run: sysadminctl -screenLock immediate -password -"
+    FAILED=1
+  fi
+fi
+
+## TouchID for sudo
+
+# sudo_local survives OS updates, /etc/pam.d/sudo does not
+PAM_SUDO=/etc/pam.d/sudo
+PAM_LOCAL=/etc/pam.d/sudo_local
+PAM_TID='^auth[[:space:]]+sufficient[[:space:]]+pam_tid\.so[[:space:]]*$'
+
+if ! compgen -G '/usr/lib/pam/pam_tid.so*' >/dev/null; then
+  echo "pam_tid not available, skipping TouchID for sudo"
+elif ! grep -q sudo_local "$PAM_SUDO"; then
+  echo "❗️ $PAM_SUDO does not include sudo_local, TouchID for sudo not configured"
+  FAILED=1
+elif [ -e "$PAM_LOCAL" ] && ! grep -Eq "$PAM_TID" "$PAM_LOCAL"; then
+  echo "❗️ $PAM_LOCAL exists without pam_tid.so, left alone. Add: auth sufficient pam_tid.so"
+  FAILED=1
+else
+  if [ ! -e "$PAM_LOCAL" ]; then
+    printf 'auth       sufficient     pam_tid.so\n' | sudo tee "$PAM_LOCAL" >/dev/null
+    sudo chmod 444 "$PAM_LOCAL"
+  fi
+  # Older versions of this repo patched sudo directly. With both, a cancelled prompt asks twice.
+  if grep -Eq "$PAM_TID" "$PAM_SUDO"; then
+    sudo sed -i '' -E "/$PAM_TID/d" "$PAM_SUDO"
+  fi
+fi
+
+exit "$FAILED"
