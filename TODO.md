@@ -1,6 +1,97 @@
 # Dotfiles Audit — Open Findings
 
-Findings from review on 2026-05-13. Ordered by severity.
+## Review 2026-11-04 (open)
+
+Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` on macOS, unless marked otherwise. No fresh Mac was available. "(patch)" means the fix is part of the tested Linux compat patch, not applied yet.
+
+### P0 — Data loss
+
+- [ ] **`gcleanlocal` deletes `main` and `develop`**
+  `home/private_dot_config/zsh/dot_zshrc:97` only filters `* main`. On any other branch `main` passes the filter. (patch)
+
+- [ ] **`gcleanremote` passes commit subjects to `git branch -d`**
+  `home/private_dot_config/zsh/dot_zshrc:96` — `$1` in double quotes expands when the alias is defined, so awk prints the whole line. A branch name in a commit subject deletes that branch. (patch)
+
+### P1 — Setup breaks
+
+- [ ] **Deprecated taps abort `brew bundle` on a fresh install**
+  `tap "homebrew/bundle"` and `tap "homebrew/services"`: `brew tap` and `brew bundle` exit 1 on Homebrew 7. Machines that already have the taps don't notice. `tap "1password/tap"` is unused, both casks come from `homebrew/cask`. (patch)
+
+- [ ] **LazyVim fails on a fresh install: `No specs found for module "plugins"`**
+  Regression from `056f06a`: `lua/plugins/` is gone, `{ import = "plugins" }` in `lua/config/lazy.lua` is not. Deployed machines keep the old file because `nvim/` is not `exact_`. (patch)
+
+- [ ] **asdf script installs into `~/.asdf` on a fresh machine**
+  A fresh apply has no `ASDF_DATA_DIR` in its environment, `zshenv` expects `~/.local/share/asdf`. (patch)
+
+- [ ] **Not usable on Linux**
+  `chezmoi apply` exits 127 (asdf, VS Code scripts assume brew). Fonts land in `~/Library/Fonts`. Every new shell prints errors from `fzf.zsh`. `ls` and `vim` point to missing binaries. `git commit` fails on mandatory signing. `load-k8s-configs.sh` caches 6 lines of `stat -f` output. All (patch).
+  Target is servers and containers: minimal profile, no Linuxbrew, no commit signing. The patch also skips the `nvim` config (LazyVim needs Neovim 0.11.2, apt ships 0.9.5) and the Withings script, and defers prezto until git and zsh exist. asdf is opt-in: once the binary exists, apply adds the plugins, `~/.tool-versions` is not deployed.
+  Still open: document `apt-get install zsh git` and `chsh` in the README. Dotfiles don't install packages on servers. Ghostty: enable `ssh-env` so `TERM` works over SSH (default off, not tested against a server).
+
+### P2 — Controls that don't do what they claim
+
+- [ ] **Firewall block is dead on macOS 15+**
+  `run_onchange_after_macos-settings.sh.tmpl:45-46` writes `com.apple.alf`. Reports since macOS 15 say this no longer takes effect, and the plist doesn't exist on 27.2 while the firewall reports its state fine. Use `socketfilterfw --setglobalstate on` and `--setstealthmode on`. Write path not tested (needs sudo).
+
+- [ ] **Screen lock keys are unreliable since macOS 10.13**
+  Same script, lines 49-50. Sources are old and mixed, so verify with `sysadminctl -screenLock status` instead of trusting the write.
+
+- [ ] **TouchID patches `/etc/pam.d/sudo`, which OS updates reset**
+  `run_once_before_00-macos-init.sh.tmpl:29-45`. `run_once` won't restore it. Use `/etc/pam.d/sudo_local` (template ships with macOS, `sudo` already includes it).
+
+- [x] **Login window text points to an undeliverable address**
+  `run_onchange_after_macos-settings.sh.tmpl:28` rendered the GitHub noreply address and overwrote any working text on re-run.
+  Done: `.lostcontact` lives in the local config only, prefilled from the address the Mac already shows. Empty leaves the text alone.
+
+- [ ] **Withings: credentials persist in a kept container**
+  `executable_sync-withings-garmin.sh:50-60`. No `--rm`, and `docker start` reuses containers created before the env var change, with the password in their args. Also: `:master` is a mutable tag on a third-party image that receives credentials, and `DATA_DIR` is created with default permissions.
+
+- [ ] **Version guard is inert**
+  `.chezmoiversion` at the repo root is not read once the config sets `sourceDir` to `home/`. Move it to `home/`. (patch)
+
+### P3 — Input handling
+
+- [ ] **Init prompts accept anything**
+  `home/.chezmoi.toml.tmpl`: `ja` for `installmas` silently means no. `$(...)` in `.name` executes in the rendered macOS script, `#` truncates `user.name` in git config. (patch)
+
+- [ ] **`--fromdate` is silently ignored once state exists**
+  `executable_sync-withings-garmin.sh:44-60`. Fail instead, and validate the format.
+
+- [ ] **`kfn` clears the namespace when fzf is cancelled**
+  `dot_zshrc:104`. From reading the code, `kubectl` was not available to test.
+
+- [ ] **`mvn` alias requires a `settings.xml` this repo doesn't ship**
+  `dot_zshrc:93`. (patch guards it)
+
+- [ ] **`chezmoi add` of a secret only warns by default**
+  Default adds the file and prints a warning. Set `[add] secrets = "error"` in `home/.chezmoi.toml.tmpl`, tested to block a GitHub token. Best effort only: a fake AWS key and a low-entropy token passed, so it doesn't replace gitleaks in CI.
+
+### P4 — Hardening and drift
+
+- [ ] **Re-runs have side effects**
+  Any edit to `macos-settings` wipes the Dock (line 63). Any edit to `00-macos-init` runs `softwareupdate --install --all` in the `before` phase, where a failure blocks deployment. Move one-time steps to their own script.
+
+- [ ] **asdf shims lose to Homebrew on macOS**
+  `path_helper` and prezto's `zprofile` move system and brew paths in front of the `zshenv` entries, so `python3` is brew's, not `.tool-versions`. Re-add the shims after prezto in `.zshrc`. Keep `~/.local/bin` behind system paths.
+
+- [ ] **Unpinned code from third parties**
+  Prezto clone (unpinned on install, then never updated), font externals (`raw/master`, no `checksum.sha256`), asdf plugins, Withings image.
+
+- [ ] **No gate in front of a public repo**
+  Add CI: gitleaks, shellcheck on rendered scripts, the Linux smoke test.
+
+- [ ] **`lazy-lock.json` is managed but rewritten by lazy.nvim**
+  After a plugin restore `chezmoi apply` prompts, and fails without a TTY. Symlink it to the source file or ignore it.
+
+- [ ] **README one-liner applies without preview**
+  `init --apply` runs sudo, PAM and update steps unseen, and brew is a prerequisite anyway. Document `brew install chezmoi`, `chezmoi init`, `chezmoi diff`, `chezmoi apply`.
+
+- [ ] **Smaller items**
+  `HOMEBREW_NO_ANALYTICS=1`. `transfer.fsckObjects = true` (old repos may fail). `script_sudo` keeps sudo open for every cask post-install and lingers up to 60s. `defaultKeyCommand` takes the first ECDSA key without checking `allowed_signers`. `_cached_eval` never invalidates. `brew bundle` list has drifted from installed casks (e.g. `zed`). Hot corner comment at `macos-settings:90` is wrong, and hot corners are written after `killall Dock`.
+
+## Review 2026-05-13
+
+Ordered by severity.
 
 ## P1 — Runtime bugs (blocking or silently breaking)
 
