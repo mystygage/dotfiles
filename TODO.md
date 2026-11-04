@@ -91,6 +91,10 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
 - [ ] **README one-liner applies without preview**
   `init --apply` runs sudo, PAM and update steps unseen, and brew is a prerequisite anyway. Document `brew install chezmoi`, `chezmoi init`, `chezmoi diff`, `chezmoi apply`.
 
+- [x] **asdf plugin hooks slow down every prompt**
+  `set-env.zsh` and `set-java-home.zsh` spawn `asdf` and `dirname` in `precmd`, about 200 ms per prompt.
+  Done: `.zshrc` sets the same variables at startup and on `cd`. Other startup tweaks (`zcompile`, skipping `/etc/zprofile`, `.hushlogin`, fewer prompt segments) brought nothing measurable.
+
 - [ ] **Ghostty over SSH to Linux**
   `TERM=xterm-ghostty` is usually unknown on servers. Set `shell-integration-features = ssh-env` in the Ghostty config. Default is off in 1.4.0, not tested against a server.
 
