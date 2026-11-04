@@ -42,16 +42,6 @@ defaults write com.apple.screencapture disable-shadow -bool true
 # Speed up browsing network shares by disabling reading/writing .DS_Store
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
 
-## Security
-
-# Enable Firewall
-sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
-sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist 2>/dev/null
-
-# Screensaver should request password immediately
-defaults write com.apple.screensaver askForPassword -int 1
-defaults write com.apple.screensaver askForPasswordDelay -int 0
-
 ## Dock
 
 # Enable highlight hover effect for the grid view of a stack (Dock)
@@ -60,11 +50,6 @@ defaults write com.apple.dock mouse-over-hilite-stack -bool true
 # Set the icon size of Dock items to 36 pixels
 defaults write com.apple.dock tilesize -int 36
 
-# Wipe all (default) app icons from the Dock
-# This is only really useful when setting up a new Mac, or if you don't use
-# the Dock to launch apps.
-defaults write com.apple.dock persistent-apps -array
-
 # Automatically hide and show the Dock
 defaults write com.apple.dock autohide -bool true
 
@@ -72,7 +57,7 @@ defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock show-recents -bool false
 
 # Dock to the left
-defaults write com.apple.dock "orientation" -string "left" && killall Dock
+defaults write com.apple.dock "orientation" -string "left"
 
 # Hot corners
 # Possible values:
@@ -90,12 +75,14 @@ defaults write com.apple.dock "orientation" -string "left" && killall Dock
 # Top left screen corner → Mission Control
 defaults write com.apple.dock wvous-tl-corner -int 2
 defaults write com.apple.dock wvous-tl-modifier -int 0
-# Bottom left screen corner → Start screen saver
+# Bottom left screen corner → Show application windows
 defaults write com.apple.dock wvous-bl-corner -int 3
 defaults write com.apple.dock wvous-bl-modifier -int 0
 # Bottom right screen corner → Start screen saver
 defaults write com.apple.dock wvous-br-corner -int 5
 defaults write com.apple.dock wvous-br-modifier -int 0
+
+killall Dock || true
 
 ## Safari
 

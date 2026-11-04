@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+{{ template "script_darwin_only" . }}
+
+# Wipe all (default) app icons from the Dock. Only useful on a new Mac. It has its
+# own script because run_once fires again whenever a script's content changes.
+defaults write com.apple.dock persistent-apps -array
+killall Dock || true
