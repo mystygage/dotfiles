@@ -105,4 +105,5 @@ Defined in `home/.chezmoiexternal.toml`: MesloLGS Nerd Font files (for powerleve
 ## Tool Versions
 
 Managed by asdf in `home/dot_tool-versions`: nodejs, java, python, golang, bun.
-Each tool needs a matching plugin in `run_once_after_20-install-asdf-plugins.sh.tmpl`.
+Each tool needs a matching plugin in `run_onchange_after_20-install-asdf-plugins.sh.tmpl`.
+That script embeds a hash of `dot_tool-versions`, so changing a version runs `asdf install` on the next `chezmoi apply`. Project-level `.tool-versions` files still need `asdf install` by hand.
