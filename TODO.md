@@ -34,14 +34,17 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
 
 ### P2 — Controls that don't do what they claim
 
-- [ ] **Firewall block is dead on macOS 15+**
-  `run_onchange_after_macos-settings.sh.tmpl:48-49` writes `com.apple.alf`. Reports since macOS 15 say this no longer takes effect, and the plist doesn't exist on 27.2 while the firewall reports its state fine. Use `socketfilterfw --setglobalstate on` and `--setstealthmode on`. Write path not tested (needs sudo).
+- [x] **Firewall block is dead on macOS 15+**
+  `macos-settings` wrote `com.apple.alf`. Reports since macOS 15 say this no longer takes effect, and the plist doesn't exist on 27.2 while the firewall reports its state fine.
+  Done: `run_onchange_after_macos-security.sh.tmpl` uses `socketfilterfw`, stealth mode included.
 
-- [ ] **Screen lock keys are unreliable since macOS 10.13**
-  Same script, lines 52-53. Sources are old and mixed, so verify with `sysadminctl -screenLock status` instead of trusting the write.
+- [x] **Screen lock keys are unreliable since macOS 10.13**
+  `macos-settings` wrote `askForPassword` and `askForPasswordDelay`. Sources are old and mixed, so the write can't be trusted.
+  Done: the security script reads `sysadminctl -screenLock status` and only sets it when needed, which prompts for the login password. That write path has not run on a real change, this Mac is already immediate.
 
-- [ ] **TouchID patches `/etc/pam.d/sudo`, which OS updates reset**
-  `run_once_before_00-macos-init.sh.tmpl:29-45`. `run_once` won't restore it. Use `/etc/pam.d/sudo_local` (template ships with macOS, `sudo` already includes it).
+- [x] **TouchID patches `/etc/pam.d/sudo`, which OS updates reset**
+  `run_once` didn't restore it after an update.
+  Done: the security script writes `/etc/pam.d/sudo_local` and removes the old line from `sudo`.
 
 - [x] **Login window text points to an undeliverable address**
   `run_onchange_after_macos-settings.sh.tmpl:28` rendered the GitHub noreply address and overwrote any working text on re-run.
@@ -75,8 +78,9 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
 
 ### P4 — Hardening and drift
 
-- [ ] **Re-runs have side effects**
-  Any edit to `macos-settings` wipes the Dock (line 66). Any edit to `00-macos-init` runs `softwareupdate --install --all` in the `before` phase, where a failure blocks deployment. Move one-time steps to their own script.
+- [x] **Re-runs have side effects**
+  Any edit to `macos-settings` wiped the Dock. Any edit to `00-macos-init` ran `softwareupdate --install --all` in the `before` phase, where a failure blocks deployment.
+  Done: the Dock wipe is in `run_once_after_30-macos-dock.sh.tmpl`. `00-macos-init` only has checked steps left and lists updates instead of installing them.
 
 - [x] **`PATH` order differs between login and non-login shells**
   Login shells: `path_helper` and prezto's `zprofile` move system and brew paths in front of the `zshenv` entries, so `python3` is brew's, not `.tool-versions`. Non-login children such as zellij panes skip both, so `~/.local/bin` and the shims come first. The same command can resolve differently per pane. Set one order for both at the end of `.zshrc`, with the shims in front of brew and `~/.local/bin` behind system paths.
@@ -102,8 +106,7 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
   `TERM=xterm-ghostty` is usually unknown on servers. Set `shell-integration-features = ssh-env` in the Ghostty config. Default is off in 1.4.0, not tested against a server.
 
 - [ ] **Smaller items**
-  `HOMEBREW_NO_ANALYTICS=1`. `transfer.fsckObjects = true` (old repos may fail). `script_sudo` keeps sudo open for every cask post-install and lingers up to 60s. `defaultKeyCommand` takes the first ECDSA key without checking `allowed_signers`. `_cached_eval` never invalidates. `brew bundle` list has drifted from installed casks (e.g. `zed`). `~/.config/homebrew/trust.json` is not managed, so `brew cu` should need `brew trust --command buo/cask-upgrade/cu` on a new Mac (from Homebrew's source, not tested on one). Hot corner comment at `macos-settings:93` is wrong, and hot corners are written after `killall Dock`.
-
+  `HOMEBREW_NO_ANALYTICS=1`. `transfer.fsckObjects = true` (old repos may fail). `script_sudo` keeps sudo open for every cask post-install and lingers up to 60s. `defaultKeyCommand` takes the first ECDSA key without checking `allowed_signers`. `_cached_eval` never invalidates. `brew bundle` list has drifted from installed casks (e.g. `zed`). `~/.config/homebrew/trust.json` is not managed, so `brew cu` should need `brew trust --command buo/cask-upgrade/cu` on a new Mac (from Homebrew's source, not tested on one).
 ## Review 2026-05-13
 
 Ordered by severity.
