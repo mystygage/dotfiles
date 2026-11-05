@@ -54,6 +54,10 @@
 
 sourceDir = {{ .chezmoi.sourceDir | quote }}
 
+# This repo is public: refuse to add files that look like they contain a secret
+[add]
+  secrets = "error"
+
 [data]
   name = {{ $name | quote }}
   email = {{ $email | quote }}
