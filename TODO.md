@@ -98,8 +98,9 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
 - [x] **No checks on a public repo**
   Done: `.github/workflows/ci.yml` with gitleaks, shellcheck on rendered scripts, `zsh -n` and the Linux smoke test.
 
-- [ ] **CI only finds a secret after it is public**
-  It runs after the push. Enable GitHub secret scanning with push protection in the repo settings, or add a local pre-commit hook with gitleaks.
+- [x] **CI only finds a secret after it is public**
+  It runs after the push.
+  Done: "Push protection for yourself" is on in the GitHub account settings, it blocks known token formats at push time. That setting lives outside this repo. If it isn't enough, add a local pre-commit hook with gitleaks.
 
 - [ ] **`lazy-lock.json` is managed but rewritten by lazy.nvim**
   After a plugin restore `chezmoi apply` prompts, and fails without a TTY. Symlink it to the source file or ignore it.
@@ -116,7 +117,7 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
   Done: `.zshrc` sets the same variables at startup and on `cd`. Other startup tweaks (`zcompile`, skipping `/etc/zprofile`, `.hushlogin`, fewer prompt segments) brought nothing measurable.
 
 - [ ] **Ghostty over SSH to Linux**
-  `TERM=xterm-ghostty` is usually unknown on servers. Set `shell-integration-features = ssh-env` in the Ghostty config. Default is off in 1.4.0, not tested against a server.
+  `TERM=xterm-ghostty` is usually unknown on servers. `shell-integration-features = ssh-env` is set, but Ghostty defines its `ssh` wrapper only in shells it starts itself. Zellij panes also have `TERM=xterm-ghostty` and don't get the wrapper. Not tested against a server.
 
 - [ ] **Smaller items**
   `HOMEBREW_NO_ANALYTICS=1`. `transfer.fsckObjects = true` (old repos may fail). `script_sudo` keeps sudo open for every cask post-install and lingers up to 60s. `defaultKeyCommand` takes the first ECDSA key without checking `allowed_signers`. `_cached_eval` never invalidates. `brew bundle` list has drifted from installed casks (e.g. `zed`). `~/.config/homebrew/trust.json` is not managed, so `brew cu` should need `brew trust --command buo/cask-upgrade/cu` on a new Mac (from Homebrew's source, not tested on one).

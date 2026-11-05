@@ -15,3 +15,6 @@ macos-titlebar-style = hidden
 window-step-resize = true
 
 keybind = shift+enter=text:\x1b\r
+
+# Servers don't know TERM=xterm-ghostty, so ssh uses xterm-256color
+shell-integration-features = ssh-env
