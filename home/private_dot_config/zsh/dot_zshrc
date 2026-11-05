@@ -133,8 +133,21 @@ gcleanlocal() {
 alias k='kubectl'
 alias kc='kubectl config use-context'
 alias kn='kubectl config set-context --current --namespace'
-alias kfc='kubectl config use-context $(kubectl config get-contexts -o name | fzf --height=6 --prompt="Kubernetes Context> ")'
-alias kfn='kubectl config set-context --current --namespace "$(kubectl get ns -o name | fzf -d/ --with-nth=2 | cut -d/ -f2)"'
+
+# Pick context or namespace with fzf. Cancelling changes nothing.
+kfc() {
+  local context
+  context="$(kubectl config get-contexts -o name | fzf --height=6 --prompt="Kubernetes Context> ")"
+  [[ -n "$context" ]] || return 0
+  kubectl config use-context "$context"
+}
+
+kfn() {
+  local namespace
+  namespace="$(kubectl get ns -o name | fzf -d/ --with-nth=2 | cut -d/ -f2)"
+  [[ -n "$namespace" ]] || return 0
+  kubectl config set-context --current --namespace "$namespace"
+}
 
 if (( $+commands[kubectl] )); then
   [[ -f "${HOME}/.local/bin/load-k8s-configs.sh" ]] && source "${HOME}/.local/bin/load-k8s-configs.sh"
