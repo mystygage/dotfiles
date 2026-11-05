@@ -1,0 +1,28 @@
+name: Package list
+
+on:
+  push:
+    paths:
+      - home/.chezmoiscripts/run_onchange_before_install-brew-bundle.sh.tmpl
+      - home/.chezmoiscripts/run_onchange_before_install-mas-bundle.sh.tmpl
+      - .github/scripts/check-brew-bundle.py
+      - .github/workflows/brew-bundle.yml
+  # Packages vanish upstream without a push here
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Packages still exist
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check Homebrew and App Store entries
+        run: python3 .github/scripts/check-brew-bundle.py

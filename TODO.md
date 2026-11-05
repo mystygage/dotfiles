@@ -100,8 +100,12 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
 - [ ] **`lazy-lock.json` is managed but rewritten by lazy.nvim**
   After a plugin restore `chezmoi apply` prompts, and fails without a TTY. Symlink it to the source file or ignore it.
 
-- [ ] **README one-liner applies without preview**
-  `init --apply` runs sudo, PAM and update steps unseen, and brew is a prerequisite anyway. Document `brew install chezmoi`, `chezmoi init`, `chezmoi diff`, `chezmoi apply`.
+- [x] **README one-liner applies without preview, and a new Mac has no brew**
+  `init --apply` ran sudo, PAM and update steps unseen. Without Homebrew the first apply stopped at `brew: command not found`.
+  Done: `bootstrap.sh` sets up a new Mac, where nothing can be overwritten. The README documents `init`, `diff`, `apply` for other machines. Idea from the unmerged `cleanup-mac-setup` branch, which also dropped the Rosetta step.
+
+- [ ] **The setup never ran on a fresh Mac**
+  `bootstrap.sh` is tested with stubs only. Expected stops: Full Disk Access in `macos-settings`, and an App Store without sign-in, which may abort the `before` phase. Run it once on the Mac mini, then delete the `cleanup-mac-setup` branch.
 
 - [x] **asdf plugin hooks slow down every prompt**
   `set-env.zsh` and `set-java-home.zsh` spawn `asdf` and `dirname` in `precmd`, about 200 ms per prompt.

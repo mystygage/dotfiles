@@ -42,7 +42,7 @@ chezmoi state delete-bucket --bucket=scriptState && chezmoi apply
 
 ## Repository Structure
 
-- `.chezmoiroot` points to `home/` as the source directory. Files in the repo root (`AGENTS.md`, `CLAUDE.md`, `TODO.md`, `README.md`, `.github/`) are not deployed.
+- `.chezmoiroot` points to `home/` as the source directory. Files in the repo root (`AGENTS.md`, `CLAUDE.md`, `TODO.md`, `README.md`, `bootstrap.sh`, `.github/`) are not deployed.
 - Source files in `home/` map to target locations:
   - `dot_` prefix: `.` (e.g. `dot_zshenv` becomes `.zshenv`)
   - `private_` prefix: file/directory with restricted permissions
@@ -78,6 +78,8 @@ Security settings (firewall, screen lock, TouchID) live in `run_onchange_after_m
 ## CI
 
 `.github/workflows/ci.yml` runs on every push: gitleaks over the full history, `zsh -n`, shellcheck on scripts rendered for macOS, and a Linux smoke test in a throwaway `HOME`. macOS behavior is not tested there, only syntax and lint.
+
+`.github/workflows/brew-bundle.yml` checks weekly and on changes that every package entry still exists upstream, because a vanished cask aborts the first apply on a new Mac.
 
 Actions, images and the chezmoi download are pinned by commit, digest and checksum. Update them on purpose.
 
