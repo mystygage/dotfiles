@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: gitleaks over the full history
+        run: >-
+          docker run --rm --network none -v "$PWD:/repo:ro"
+          ghcr.io/gitleaks/gitleaks:v8.28.0@sha256:cdbb7c955abce02001a9f6c9f602fb195b7fadc1e812065883f695d1eeaba854
+          detect --source /repo --no-banner --redact --log-level info
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install chezmoi and zsh
+        run: |
+          bash .github/scripts/install-chezmoi.sh
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq zsh
+      - name: zsh syntax
+        run: |
+          for file in \
+            home/dot_zshenv \
+            home/private_dot_config/exact_fzf/fzf.zsh \
+            home/private_dot_config/zsh/dot_p10k.zsh \
+            home/private_dot_config/zsh/dot_zpreztorc \
+            home/private_dot_config/zsh/dot_zshenv \
+            home/private_dot_config/zsh/dot_zshrc; do
+            zsh -n "$file"
+          done
+      - name: Render scripts for macOS
+        run: bash .github/scripts/render-scripts.sh "$RUNNER_TEMP/rendered"
+      - name: shellcheck
+        working-directory: ${{ runner.temp }}/rendered
+        run: >-
+          docker run --rm --network none -v "$PWD:/mnt:ro" -w /mnt
+          koalaman/shellcheck:v0.10.0@sha256:2097951f02e735b613f4a34de20c40f937a6c8f18ecb170612c88c34517221fb
+          --severity=info --format=gcc ./*
+
+  linux-smoke:
+    name: Linux smoke test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install chezmoi and zsh
+        run: |
+          bash .github/scripts/install-chezmoi.sh
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq zsh
+      - name: Deploy and check
+        run: bash .github/scripts/linux-smoke.sh

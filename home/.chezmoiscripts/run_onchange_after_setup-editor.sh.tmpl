@@ -20,5 +20,5 @@ set -eufo pipefail
 export NODE_NO_WARNINGS=1
 
 {{ range $extensions -}}
-$(brew --prefix)/bin/code --force --install-extension {{ . }}
+"$(brew --prefix)/bin/code" --force --install-extension {{ . }}
 {{ end -}}

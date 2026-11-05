@@ -67,14 +67,16 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
   `executable_sync-withings-garmin.sh`.
   Done: every run starts a new container, so it always applies. The format is validated.
 
-- [ ] **`kfn` clears the namespace when fzf is cancelled**
-  `dot_zshrc`. From reading the code, `kubectl` was not available to test.
+- [x] **`kfn` clears the namespace when fzf is cancelled**
+  `dot_zshrc`.
+  Done: `kfc` and `kfn` are functions that do nothing on an empty selection. Tested with stubs, `kubectl` is not installed here.
 
 - [x] **`mvn` alias requires a `settings.xml` this repo doesn't ship**
   Done: alias only exists when the file does.
 
-- [ ] **`chezmoi add` of a secret only warns by default**
-  Default adds the file and prints a warning. Set `[add] secrets = "error"` in `home/.chezmoi.toml.tmpl`, tested to block a GitHub token. Best effort only: a fake AWS key and a low-entropy token passed, so it doesn't replace gitleaks in CI.
+- [x] **`chezmoi add` of a secret only warns by default**
+  Default adds the file and prints a warning.
+  Done: `[add] secrets = "error"` in `home/.chezmoi.toml.tmpl`, tested to block a GitHub token. Best effort only: a fake AWS key and a low-entropy token passed. Override a false positive with `chezmoi add --secrets=ignore`.
 
 ### P4 — Hardening and drift
 
@@ -89,8 +91,11 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
 - [ ] **Unpinned code from third parties**
   Prezto clone (unpinned on install, then never updated), font externals (`raw/master`, no `checksum.sha256`), asdf plugins. The Withings image is pinned to the 2025-08 build: update it on purpose, newer builds change the Garmin session format.
 
-- [ ] **No gate in front of a public repo**
-  Add CI: gitleaks, shellcheck on rendered scripts, the Linux smoke test.
+- [x] **No checks on a public repo**
+  Done: `.github/workflows/ci.yml` with gitleaks, shellcheck on rendered scripts, `zsh -n` and the Linux smoke test.
+
+- [ ] **CI only finds a secret after it is public**
+  It runs after the push. Enable GitHub secret scanning with push protection in the repo settings, or add a local pre-commit hook with gitleaks.
 
 - [ ] **`lazy-lock.json` is managed but rewritten by lazy.nvim**
   After a plugin restore `chezmoi apply` prompts, and fails without a TTY. Symlink it to the source file or ignore it.
