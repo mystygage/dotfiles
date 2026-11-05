@@ -4,13 +4,22 @@ personal dotfiles, managed with [`chezmoi`](https://github.com/twpayne/chezmoi).
 
 ## Setup
 
+On a new Mac:
+
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io/lb)" -- init --apply mystygage --purge-binary
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mystygage/dotfiles/main/bootstrap.sh)"
 ```
 
-## Details
+It installs the Xcode Command Line Tools (run it again after that dialog), [`brew`](https://brew.sh) and `chezmoi`, then deploys the dotfiles.
 
-On macOS the script assumes that [`brew`](https://brew.sh) is already installed.
+Two things can stop the first apply:
+
+- App Store apps need a signed-in App Store. Sign in first, or answer `no` when asked.
+- `macos-settings` needs Full Disk Access for the terminal. It opens System Settings and stops. Grant it, open a new terminal and run `chezmoi apply`.
+
+On a machine that already has files in place, look before you apply: `chezmoi init mystygage`, `chezmoi diff`, `chezmoi apply`.
+
+## Details
 
 - all config files are stored in `XDG_CONFIG_HOME` which defaults to `~/.config`
 - install tools and apps with Homebrew

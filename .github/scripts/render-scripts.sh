@@ -43,6 +43,6 @@ for file in "$root"/home/.chezmoiscripts/*; do
   fi
 done
 
-cp "$root"/home/dot_local/bin/executable_* "$out/"
+cp "$root"/bootstrap.sh "$root"/home/dot_local/bin/executable_* "$out/"
 ls -1 "$out"
 exit "$failed"
