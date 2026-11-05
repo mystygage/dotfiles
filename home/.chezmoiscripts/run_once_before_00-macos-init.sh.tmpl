@@ -29,11 +29,6 @@ if /usr/bin/xcrun clang 2>&1 | grep -q license; then
   sudo xcodebuild -license
 fi
 
-if [ "${CHEZMOI_ARCH}" == "arm64" ] && ! /usr/bin/arch -x86_64 /usr/bin/true 2>/dev/null; then
-  echo "Install Rosetta 2"
-  sudo softwareupdate --install-rosetta --agree-to-license
-fi
-
 # Only list updates: installing them can restart the Mac or start a major upgrade,
 # and a failure here would block the deployment.
 echo "Checking for software updates:"
