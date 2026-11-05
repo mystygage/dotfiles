@@ -24,3 +24,7 @@ path=("${ASDF_DATA_DIR}/shims" ${path:#${HOME}/(.local/bin|.docker/bin(|/))} "${
 # use neovim as default editor
 export EDITOR='nvim'
 export VISUAL='nvim'
+
+# Ubuntu's /etc/zsh/zshrc runs a plain compinit before prezto's. That is redundant,
+# and with an insecure directory in fpath it stops every new shell with a question.
+skip_global_compinit=1

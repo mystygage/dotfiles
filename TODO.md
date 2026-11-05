@@ -32,6 +32,10 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
   `chezmoi apply` exits 127 (asdf, VS Code scripts assume brew). Fonts land in `~/Library/Fonts`. Every new shell prints errors from `fzf.zsh`. `ls` and `vim` point to missing binaries. `git commit` fails on mandatory signing. `load-k8s-configs.sh` caches 6 lines of `stat -f` output. 
   Done: minimal profile for servers and containers, no Linuxbrew, no commit signing. Skips the `nvim` config (LazyVim needs Neovim 0.11.2, apt ships 0.9.5) and the Withings script, defers prezto until git and zsh exist. asdf is opt-in: once the binary exists, apply adds the plugins, `~/.tool-versions` is not deployed, so runtimes stay a per-host choice. Prerequisites are in the README.
 
+- [x] **Ubuntu's global `compinit` can stop every new shell**
+  `/etc/zsh/zshrc` runs a plain `compinit` before prezto's. With a group or world writable directory in `fpath` it asks a question on every new shell, and aborts without an answer. Found by the first CI run on a GitHub runner.
+  Done: `skip_global_compinit=1` in `zshenv`. Prezto still sets up completion.
+
 ### P2 — Controls that don't do what they claim
 
 - [x] **Firewall block is dead on macOS 15+**
