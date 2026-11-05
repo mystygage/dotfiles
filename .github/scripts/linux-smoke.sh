@@ -8,6 +8,7 @@ root="${1:-$(cd "$(dirname "$0")/../.." && pwd)}"
 
 HOME="$(mktemp -d)"
 export HOME
+export TERM=xterm-256color
 unset XDG_CONFIG_HOME XDG_DATA_HOME XDG_CACHE_HOME XDG_STATE_HOME ZDOTDIR
 cd "$HOME"
 
@@ -16,9 +17,12 @@ fail() {
   exit 1
 }
 
-# `zsh -ic` runs without a terminal here, which makes zsh print this one notice
+# CI has no terminal and an interactive zsh complains about that, so give it a pseudo-terminal
 zsh_stderr() {
-  { zsh -ic "$1" 2>&1 >/dev/null </dev/null || true; } | grep -v "can't change option: zle" || true
+  local errors
+  errors="$(mktemp)"
+  script -qec "zsh -ic '$1' 2>'$errors'" /dev/null >/dev/null </dev/null || true
+  cat "$errors"
 }
 
 echo "--- deploy"
