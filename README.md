@@ -14,7 +14,7 @@ It installs the Xcode Command Line Tools (run it again after that dialog), [`bre
 
 Two things can stop the first apply:
 
-- App Store apps need a signed-in App Store. Sign in first, or answer `no` when asked.
+- App Store apps need a signed-in App Store. Sign in first, or answer `no` when asked. `Pins for Pinboard` is no longer in the German store and not on the list, install it by hand if your purchases still offer it.
 - `macos-settings` needs Full Disk Access for the terminal. It opens System Settings and stops. Grant it, open a new terminal and run `chezmoi apply`.
 
 On a machine that already has files in place, look before you apply: `chezmoi init mystygage`, `chezmoi diff`, `chezmoi apply`.
