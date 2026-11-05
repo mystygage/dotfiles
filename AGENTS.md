@@ -42,7 +42,7 @@ chezmoi state delete-bucket --bucket=scriptState && chezmoi apply
 
 ## Repository Structure
 
-- `.chezmoiroot` points to `home/` as the source directory. Files in the repo root (`AGENTS.md`, `CLAUDE.md`, `TODO.md`, `README.md`) are not deployed.
+- `.chezmoiroot` points to `home/` as the source directory. Files in the repo root (`AGENTS.md`, `CLAUDE.md`, `TODO.md`, `README.md`, `.github/`) are not deployed.
 - Source files in `home/` map to target locations:
   - `dot_` prefix: `.` (e.g. `dot_zshenv` becomes `.zshenv`)
   - `private_` prefix: file/directory with restricted permissions
@@ -74,6 +74,12 @@ Package lists are inlined in the scripts, so editing them triggers a re-run:
 Security settings (firewall, screen lock, TouchID) live in `run_onchange_after_macos-security.sh.tmpl`. That script reads the real state and only changes what differs.
 
 `run_once` and `run_onchange` scripts fire again whenever their rendered content changes, so they must be safe to re-run. A destructive one-time step gets its own small script, like `run_once_after_30-macos-dock.sh.tmpl`.
+
+## CI
+
+`.github/workflows/ci.yml` runs on every push: gitleaks over the full history, `zsh -n`, shellcheck on scripts rendered for macOS, and a Linux smoke test in a throwaway `HOME`. macOS behavior is not tested there, only syntax and lint.
+
+Actions, images and the chezmoi download are pinned by commit, digest and checksum. Update them on purpose.
 
 ## Linux
 
