@@ -92,6 +92,12 @@ fi
 # use yubikey agent
 [[ -S "${HOMEBREW_PREFIX}/var/run/yubikey-agent.sock" ]] && export SSH_AUTH_SOCK="${HOMEBREW_PREFIX}/var/run/yubikey-agent.sock"
 
+# Servers don't know xterm-ghostty. Ghostty's ssh-env wrapper only exists in shells
+# Ghostty starts itself, zellij panes keep its TERM without the wrapper.
+if [[ -n "$ZELLIJ" && "$TERM" == xterm-ghostty ]]; then
+  ssh() { TERM=xterm-256color command ssh "$@"; }
+fi
+
 # use nvim instead of vim/vi
 if (( $+commands[nvim] )); then
   alias vim="nvim"
