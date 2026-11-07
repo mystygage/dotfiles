@@ -116,8 +116,9 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
   `set-env.zsh` and `set-java-home.zsh` spawn `asdf` and `dirname` in `precmd`, about 200 ms per prompt.
   Done: `.zshrc` sets the same variables at startup and on `cd`. Other startup tweaks (`zcompile`, skipping `/etc/zprofile`, `.hushlogin`, fewer prompt segments) brought nothing measurable.
 
-- [ ] **Ghostty over SSH to Linux**
-  `TERM=xterm-ghostty` is usually unknown on servers. `shell-integration-features = ssh-env` is set, but Ghostty defines its `ssh` wrapper only in shells it starts itself. Zellij panes also have `TERM=xterm-ghostty` and don't get the wrapper. Not tested against a server.
+- [x] **Ghostty over SSH to Linux**
+  `TERM=xterm-ghostty` is usually unknown on servers. Ghostty defines its `ssh-env` wrapper only in shells it starts itself, zellij panes also have `TERM=xterm-ghostty` and don't get it.
+  Done: `ssh-env` for Ghostty tabs, an `ssh` function in `.zshrc` for zellij panes. Not tested against a server.
 
 - [ ] **Smaller items**
   `HOMEBREW_NO_ANALYTICS=1`. `transfer.fsckObjects = true` (old repos may fail). `script_sudo` keeps sudo open for every cask post-install and lingers up to 60s. `defaultKeyCommand` takes the first ECDSA key without checking `allowed_signers`. `_cached_eval` never invalidates. `brew bundle` list has drifted from installed casks (e.g. `zed`). `~/.config/homebrew/trust.json` is not managed, so `brew cu` should need `brew trust --command buo/cask-upgrade/cu` on a new Mac (from Homebrew's source, not tested on one).
