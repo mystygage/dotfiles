@@ -57,6 +57,7 @@ chezmoi state delete-bucket --bucket=scriptState && chezmoi apply
 - `home/.chezmoitemplates/`: reusable script fragments, included via `{{ template "name" . }}`
 - `home/dot_local/bin/`: custom shell scripts added to `PATH`
 - `home/private_dot_config/`: application configs (zsh/prezto, nvim/LazyVim, git, ghostty, asdf, fzf)
+- `home/private_dot_config/nvim/.lazy-lock.json`: lazy.nvim's lock file. chezmoi skips dot-prefixed source files and deploys `symlink_lazy-lock.json.tmpl` pointing here, so `:Lazy update` changes this file in the repo directly.
 
 ### Script Execution Order
 
