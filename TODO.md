@@ -102,8 +102,9 @@ Reproduced in scratch repos, Ubuntu 24.04 arm64 containers and a scratch `HOME` 
   It runs after the push.
   Done: "Push protection for yourself" is on in the GitHub account settings, it blocks known token formats at push time. That setting lives outside this repo. If it isn't enough, add a local pre-commit hook with gitleaks.
 
-- [ ] **`lazy-lock.json` is managed but rewritten by lazy.nvim**
-  After a plugin restore `chezmoi apply` prompts, and fails without a TTY. Symlink it to the source file or ignore it.
+- [x] **`lazy-lock.json` is managed but rewritten by lazy.nvim**
+  After `:Lazy update` the next `chezmoi apply` prompts, and fails without a TTY. Answering overwrite puts the old versions back.
+  Decided: stays a plain managed file, updated by hand. After `:Lazy update` and a quick check, run `chezmoi re-add ~/.config/nvim/lazy-lock.json` and commit. The chezmoi docs would symlink it to the source instead.
 
 - [x] **README one-liner applies without preview, and a new Mac has no brew**
   `init --apply` ran sudo, PAM and update steps unseen. Without Homebrew the first apply stopped at `brew: command not found`.
