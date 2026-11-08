@@ -9,7 +9,8 @@ DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/withings-sync"
 USER_FILE="$DATA_DIR/.withings_user.json"
 CONTAINER_NAME="withings"
 # Third-party image that receives credentials: pinned, update the digest on purpose
-IMAGE="ghcr.io/jaroslawhartman/withings-sync@sha256:f0faf4556bce22976f05fe00a692601ff07a20210770ad4afec7c508e55bb1f2"
+# v6.1.0. Runs as uid 1000 and keeps its tokens in --config-folder.
+IMAGE="ghcr.io/jaroslawhartman/withings-sync@sha256:732bc7efba6c7efc906ae506b96c0693d5cfde6b53e3a41867d028a43637ed66"
 
 # Defaults
 FROMDATE=""
@@ -59,6 +60,8 @@ fi
 
 mkdir -p "$DATA_DIR"
 chmod -R go-rwx "$DATA_DIR"
+# The container writes with its own umask (garmin_tokens.json ends up 644)
+trap 'chmod -R go-rwx "$DATA_DIR"' EXIT
 
 # Pass credentials via environment (name only), so they don't show up in `ps`.
 # --rm drops them from `docker inspect` when the sync ends.
@@ -66,10 +69,10 @@ GARMIN_USERNAME="$(op read op://private/garmin/username)"
 GARMIN_PASSWORD="$(op read op://private/garmin/password)"
 export GARMIN_USERNAME GARMIN_PASSWORD
 CMD=(
-  docker run --rm -v "$DATA_DIR:/root" --interactive --tty
+  docker run --rm -v "$DATA_DIR:/config" --interactive --tty
   --name "$CONTAINER_NAME"
   -e GARMIN_USERNAME -e GARMIN_PASSWORD
-  "$IMAGE"
+  "$IMAGE" --config-folder /config
 )
 if [[ -n "$FROMDATE" ]]; then
   CMD+=(--fromdate "$FROMDATE")
