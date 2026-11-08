@@ -14,8 +14,9 @@
     format = ssh
 [gpg "ssh"]
     allowedSignersFile = ~/.config/git/allowed_signers
-    # Sign with whichever YubiKey is plugged in (keys listed in .chezmoidata.toml)
-    defaultKeyCommand = sh -c 'k=$(ssh-add -L | grep -m1 ^ecdsa-sha2-) && echo key::$k'
+    # Sign with whichever YubiKey is plugged in, if allowed_signers lists it
+    # (keys in .chezmoidata.toml). Absolute path: GUI apps lack ~/.local/bin.
+    defaultKeyCommand = {{ .chezmoi.homeDir }}/.local/bin/git-signing-key
 [init]
     defaultBranch = main
 [advice]
@@ -37,6 +38,10 @@
     rebase = true
 [fetch]
     prune = true
+[transfer]
+    # Check every received object, this also catches malicious .gitmodules.
+    # An old repo with broken history: git -c transfer.fsckObjects=false clone ...
+    fsckObjects = true
 [push]
     default = simple
 [rerere]

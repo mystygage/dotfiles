@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# gpg.ssh.defaultKeyCommand: prints the first ssh-agent key that allowed_signers
+# lists, so git never signs with some other key that happens to be loaded.
+# Fails when none is loaded, and with it the commit.
+
+set -euo pipefail
+
+allowed="$(git config --path --get gpg.ssh.allowedSignersFile || true)"
+if [[ ! -r "$allowed" ]]; then
+  echo "git-signing-key: allowed_signers not readable: ${allowed:-gpg.ssh.allowedSignersFile is unset}" >&2
+  exit 1
+fi
+
+# Lines look like: <email> namespaces="git" <type> <base64> <comment>
+while read -r type key _; do
+  if grep -qF -- " $type $key" "$allowed"; then
+    echo "key::$type $key"
+    exit 0
+  fi
+done < <(ssh-add -L 2>/dev/null)
+
+echo "git-signing-key: no key from $allowed in ssh-agent (YubiKey plugged in?)" >&2
+exit 1
