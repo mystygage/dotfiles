@@ -1,0 +1,30 @@
+{{- /* Renders empty until both exist, so it runs once they do */ -}}
+{{- if and (lookPath "git") (lookPath "zsh") -}}
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Pinned in .chezmoidata.toml. A new ref re-runs this script.
+PREZTODIR="${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/.zprezto"
+REPO=https://github.com/{{ .pins.prezto.repo }}.git
+REF={{ .pins.prezto.ref }}
+
+if [ ! -d "${PREZTODIR}" ]; then
+  git clone --quiet "${REPO}" "${PREZTODIR}"
+fi
+cd "${PREZTODIR}"
+
+# Don't carry local edits onto the pinned commit. Submodules are reset below.
+if [ -n "$(git status --porcelain --ignore-submodules)" ]; then
+  echo "prezto: local changes in ${PREZTODIR}, not moving to ${REF}:" >&2
+  git status --short --ignore-submodules >&2
+  exit 1
+fi
+
+if ! git cat-file -e "${REF}^{commit}" 2>/dev/null; then
+  git fetch --quiet origin
+fi
+git -c advice.detachedHead=false checkout --quiet --detach "${REF}"
+git submodule --quiet sync --recursive
+git submodule --quiet update --init --recursive
+{{ end -}}

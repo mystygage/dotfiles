@@ -38,8 +38,29 @@ for path in Library .config/ghostty .config/zed .config/nvim .config/asdf .tool-
   [ ! -e "$HOME/$path" ] || fail "macOS-only path deployed: $path"
 done
 
-echo "--- prezto"
-[ -d "$HOME/.config/zsh/.zprezto" ] || fail "prezto is not installed"
+echo "--- prezto and powerlevel10k at their pins"
+prezto="$HOME/.config/zsh/.zprezto"
+pin="$(sed -n '/^\[pins\.prezto\]/,/^\[/s/^  ref = "\(.*\)"/\1/p' "$root/home/.chezmoidata.toml")"
+[ -d "$prezto" ] || fail "prezto is not installed"
+[ "$(git -C "$prezto" rev-parse HEAD)" = "$pin" ] || fail "prezto is not at $pin"
+[ -r "$HOME/.local/share/powerlevel10k/powerlevel10k.zsh-theme" ] || fail "powerlevel10k is not deployed"
+loaded="$(zsh -ic 'print $+functions[p10k]' 2>/dev/null </dev/null | tail -n 1)"
+[ "$loaded" = 1 ] || fail "powerlevel10k does not load"
+
+echo "--- an existing prezto clone moves to the pin, unless it has local edits"
+git -C "$prezto" -c advice.detachedHead=false checkout -q HEAD~1
+git -C "$prezto/modules/prompt/external/powerlevel10k" -c advice.detachedHead=false checkout -q HEAD~1
+chezmoi state delete-bucket --bucket=entryState
+chezmoi apply </dev/null
+[ "$(git -C "$prezto" rev-parse HEAD)" = "$pin" ] || fail "existing prezto clone stays off $pin"
+[ -z "$(git -C "$prezto" status --porcelain)" ] || fail "prezto submodules are not reset"
+echo "# local edit" >> "$prezto/init.zsh"
+chezmoi state delete-bucket --bucket=entryState
+if chezmoi apply </dev/null 2>/dev/null; then
+  fail "apply moves prezto over local edits"
+fi
+git -C "$prezto" checkout -q -- init.zsh
+chezmoi apply </dev/null
 
 echo "--- new shell prints no errors"
 errors="$(zsh_stderr true)"

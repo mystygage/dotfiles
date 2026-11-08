@@ -80,7 +80,9 @@ Security settings (firewall, screen lock, TouchID) live in `run_onchange_after_m
 
 `.github/workflows/ci.yml` runs on every push: gitleaks over the full history, `zsh -n`, shellcheck on scripts rendered for macOS, and a Linux smoke test in a throwaway `HOME`. macOS behavior is not tested there, only syntax and lint.
 
-`.github/workflows/brew-bundle.yml` checks weekly and on changes that every package entry still exists upstream, because a vanished cask aborts the first apply on a new Mac.
+`.github/workflows/upstream.yml` runs weekly and on changes:
+- every package entry still exists upstream, because a vanished cask aborts the first apply on a new Mac
+- the pins in `.chezmoidata.toml` and the Withings image keep up with upstream: a warning while behind, an error once upstream changes have waited more than 30 days or a pinned commit left the default branch
 
 Actions, images and the chezmoi download are pinned by commit, digest and checksum. Update them on purpose.
 
@@ -103,6 +105,7 @@ Template data is defined in `home/.chezmoi.toml.tmpl`:
 
 Static data lives in `home/.chezmoidata.toml` (read on every apply, no `chezmoi init` needed):
 - `.yubikeys`: serial + SSH public key per YubiKey, used for git commit signing (`allowed_signers`)
+- `.pins`: commit (and checksum) for prezto, powerlevel10k, the fonts and each asdf plugin. To update, read upstream's changes, then bump `ref`. An archive or file also needs its new `sha256`. The scripts and externals render the pins, so the next `chezmoi apply` moves existing machines too.
 
 Helpers in `home/.chezmoitemplates/`:
 - `script_darwin_only`: exits if not on macOS
@@ -113,10 +116,14 @@ Helpers in `home/.chezmoitemplates/`:
 
 ## External Dependencies
 
-Defined in `home/.chezmoiexternal.toml`: MesloLGS Nerd Font files (for powerlevel10k), downloaded into `~/Library/Fonts`.
+Defined in `home/.chezmoiexternal.toml` (a template, pins from `.chezmoidata.toml`):
+- powerlevel10k as an archive in `~/.local/share/powerlevel10k`, sourced by `.zshrc`. Prezto's `prompt` module is not loaded, its submodule lags behind.
+- MesloLGS Nerd Font files (for powerlevel10k) in `~/Library/Fonts`
+
+Prezto itself is a git clone with submodules, so `run_onchange_after_10-install-prezto.sh.tmpl` checks out the pinned commit. It stops when the clone has local edits.
 
 ## Tool Versions
 
 Managed by asdf in `home/dot_tool-versions`: nodejs, java, python, golang, bun.
-Each tool needs a matching plugin in `run_onchange_after_20-install-asdf-plugins.sh.tmpl`.
+Each tool needs a matching plugin under `pins.asdf` in `.chezmoidata.toml`. `run_onchange_after_20-install-asdf-plugins.sh.tmpl` adds it and checks out the pinned ref. Don't run `asdf plugin update --all`, it moves the plugins off their pins.
 That script embeds a hash of `dot_tool-versions`, so changing a version runs `asdf install` on the next `chezmoi apply`. Project-level `.tool-versions` files still need `asdf install` by hand.

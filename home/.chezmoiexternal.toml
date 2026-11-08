@@ -1,12 +1,16 @@
-['Library/Fonts/MesloLGS NF Bold.ttf']
+{{- /* Refs and checksums live in .chezmoidata.toml */ -}}
+{{- $p10k := .pins.powerlevel10k }}
+# Sourced by .zshrc. exact removes files dropped upstream, .chezmoiignore keeps p10k's *.zwc.
+['.local/share/powerlevel10k']
+  type = "archive"
+  url = "https://github.com/{{ $p10k.repo }}/archive/{{ $p10k.ref }}.tar.gz"
+  checksum.sha256 = "{{ $p10k.sha256 }}"
+  stripComponents = 1
+  exact = true
+{{- $fonts := .pins.fonts }}
+{{- range $style, $sum := $fonts.sha256 }}
+['Library/Fonts/MesloLGS NF {{ $style }}.ttf']
   type = "file"
-  url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
-['Library/Fonts/MesloLGS NF Bold Italic.ttf']
-  type = "file"
-  url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
-['Library/Fonts/MesloLGS NF Italic.ttf']
-  type = "file"
-  url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
-['Library/Fonts/MesloLGS NF Regular.ttf']
-  type = "file"
-  url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
+  url = "https://github.com/{{ $fonts.repo }}/raw/{{ $fonts.ref }}/MesloLGS%20NF%20{{ $style | replace " " "%20" }}.ttf"
+  checksum.sha256 = "{{ $sum }}"
+{{- end }}

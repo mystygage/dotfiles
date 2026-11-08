@@ -41,8 +41,8 @@ zstyle ':prezto:load' pmodule \
   'completion' \
   'syntax-highlighting' \
   'history-substring-search' \
-  'autosuggestions' \
-  'prompt'
+  'autosuggestions'
+# No 'prompt': .zshrc sources the pinned powerlevel10k itself
 
 #
 # Autosuggestions
@@ -130,10 +130,12 @@ zstyle ':prezto:module:history' savehist 10000
 # Prompt
 #
 
+# The prompt module is not loaded, so these have no effect.
+
 # Set the prompt theme to load.
 # Setting it to 'random' loads a random theme.
 # Auto set to 'off' on dumb terminals.
-zstyle ':prezto:module:prompt' theme 'powerlevel10k'
+# zstyle ':prezto:module:prompt' theme 'powerlevel10k'
 
 # Set the working directory prompt display length.
 # By default, it is set to 'short'. Set it to 'long' (without '~' expansion)

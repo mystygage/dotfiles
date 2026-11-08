@@ -45,6 +45,6 @@ sh -c "$(curl -fsLS get.chezmoi.io/lb)" -- init --apply mystygage
 - Prezto is installed by the first `chezmoi apply` that finds both `git` and `zsh`.
 - Commits are unsigned, the YubiKey stays on the Mac.
 - asdf is opt-in: install the [binary](https://github.com/asdf-vm/asdf/releases) on a host that needs runtimes and the next `chezmoi apply` adds the plugins. Versions come from each project's `.tool-versions`.
-- Use this for dev and debug containers, not production images. It pulls unpinned code at runtime.
+- Use this for dev and debug containers, not production images. Apply fetches prezto and powerlevel10k from GitHub (pinned commits), the first prompt downloads gitstatusd.
 
 Guidance for coding agents (Codex, Claude Code) lives in [`AGENTS.md`](AGENTS.md).

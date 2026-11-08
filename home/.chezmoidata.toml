@@ -7,3 +7,44 @@
 [[yubikeys]]
   serial = "15285561"
   key = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFbdDxI/JcQwSsO0KHgm76N9nSPJwTYN3OK4/XVnOj+43RLrmfGjMVfKyvBjIZguD/nC30BKotXWi4uDnHNFleM="
+
+# Third-party code, pinned by commit. Update on purpose: read upstream's
+# changes, then bump ref (and sha256). The weekly upstream check in CI
+# reports pins that fall behind.
+[pins.prezto]
+  repo = "sorin-ionescu/prezto"
+  ref = "cff2d01871425b1b80710f8ec6a475c5a53145b4"
+
+# Loaded directly: prezto's submodule lags behind (v1.20.0 from 2024-01)
+[pins.powerlevel10k]
+  repo = "romkatv/powerlevel10k"
+  ref = "7ddd1b2715c3844275214347a3572ac1fdd6dc39"
+  sha256 = "9794636c4cdfaf834cefdb55c4e7d5f0e9bf78451ecd6f4ea2bd85a026d7f296"
+
+# MesloLGS NF v2.3.3
+[pins.fonts]
+  repo = "romkatv/powerlevel10k-media"
+  ref = "145eb9fbc2f42ee408dacd9b22d8e6e0e553f83d"
+[pins.fonts.sha256]
+  "Regular" = "d97946186e97f8d7c0139e8983abf40a1d2d086924f2c5dbf1c29bd8f2c6e57d"
+  "Bold" = "b6c0199cf7c7483c8343ea020658925e6de0aeb318b89908152fcb4d19226003"
+  "Italic" = "6f357bcbe2597704e157a915625928bca38364a89c22a4ac36e7a116dcd392ef"
+  "Bold Italic" = "56b4131adecec052c4b324efb818dd326d586dbc316fc68f98f1cae2eb8d1220"
+
+# One entry per tool in dot_tool-versions. asdf-java ships its version list
+# in the repo, so a new JDK needs a newer ref.
+[pins.asdf.nodejs]
+  repo = "asdf-vm/asdf-nodejs"
+  ref = "779c8dc84b3bdab38c2c80622d315c2c3267f74b"
+[pins.asdf.java]
+  repo = "halcyon/asdf-java"
+  ref = "bc4c3f265924c8f17718aaceae20edba1b86f5cb"
+[pins.asdf.python]
+  repo = "asdf-community/asdf-python"
+  ref = "abc2a03863e4d569b4f9de0d0efc1a88d96c2c12"
+[pins.asdf.golang]
+  repo = "asdf-community/asdf-golang"
+  ref = "a75b761963d8e6eda1a185c73476da8a75b8d300"
+[pins.asdf.bun]
+  repo = "cometkim/asdf-bun"
+  ref = "804d9603c473ea616fa078f851fa8380246e2c7a"

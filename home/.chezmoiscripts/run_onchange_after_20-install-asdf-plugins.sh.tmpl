@@ -13,11 +13,11 @@ set -euo pipefail
 export ASDF_CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/asdf/asdfrc"
 export ASDF_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/asdf"
 
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-asdf plugin add java https://github.com/halcyon/asdf-java.git
-asdf plugin add python https://github.com/asdf-community/asdf-python.git
-asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
-asdf plugin add bun https://github.com/cometkim/asdf-bun.git
+# Refs pinned in .chezmoidata.toml. `add` ignores a ref, `update` checks it out.
+{{- range $name, $plugin := .pins.asdf }}
+asdf plugin add {{ $name }} https://github.com/{{ $plugin.repo }}.git
+asdf plugin update {{ $name }} {{ $plugin.ref }}
+{{- end }}
 
 asdf install
 {{ end -}}
