@@ -38,11 +38,10 @@ chezmoi state delete-bucket --bucket=scriptState && chezmoi apply
 - Shell scripts: `#!/usr/bin/env bash` on line 1 (also after template rendering), `set -euo pipefail`, quote variables. Target BSD userland (macOS), not GNU. Anything deployed to Linux must work with both.
 - Formatting follows `.editorconfig`: UTF-8, LF, 2-space indent, final newline.
 - Commit messages use a `[scope] description` prefix, e.g. `[zsh] improve start up time with caching`.
-- Open findings and planned work live in `TODO.md`. Tick items off there when fixed.
 
 ## Repository Structure
 
-- `.chezmoiroot` points to `home/` as the source directory. Files in the repo root (`AGENTS.md`, `CLAUDE.md`, `TODO.md`, `README.md`, `bootstrap.sh`, `.github/`) are not deployed.
+- `.chezmoiroot` points to `home/` as the source directory. Files in the repo root (`AGENTS.md`, `CLAUDE.md`, `README.md`, `bootstrap.sh`, `.github/`) are not deployed.
 - Source files in `home/` map to target locations:
   - `dot_` prefix: `.` (e.g. `dot_zshenv` becomes `.zshenv`)
   - `private_` prefix: file/directory with restricted permissions
