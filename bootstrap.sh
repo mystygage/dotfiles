@@ -33,6 +33,8 @@ if [ ! -x "$brew_bin" ]; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 eval "$("$brew_bin" shellenv)"
+# The brew bundle script turns analytics off for good, until then skip them per call
+export HOMEBREW_NO_ANALYTICS=1
 
 if ! brew list --formula chezmoi >/dev/null 2>&1; then
   brew install chezmoi

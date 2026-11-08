@@ -6,6 +6,8 @@ set -euo pipefail
 {{ template "script_eval_brew" . }}
 {{ template "script_sudo" . }}
 
+# Persistent, also for brew runs that never read zshenv (GUI tools, chezmoi scripts)
+brew analytics off
 
 brew bundle --file=/dev/stdin <<EOF
 
@@ -15,37 +17,59 @@ brew "asdf"
 brew "bash"
 brew "bat"
 brew "chezmoi"
+brew "coreutils"
 brew "curl"
 brew "docker"
 brew "docker-credential-helper"
 brew "eza"
 brew "fd"
 brew "fzf"
+brew "gawk"
 brew "git"
 brew "git-lfs"
 brew "gitui"
+brew "gnu-sed"
+brew "jj"
 brew "jump"
+brew "lazydocker"
 brew "lazygit"
 brew "mas"
 brew "mkcert"
 brew "neovim"
 brew "openssh"
-brew "rg"
+# Container engine behind the docker CLI, sync-withings-garmin.sh needs one
+brew "podman"
+brew "podman-compose"
+brew "ripgrep"
+brew "wget"
+brew "ykman"
 brew "yubikey-agent", restart_service: true
+brew "zellij"
 brew "zsh"
 
 cask "1password"
 cask "1password-cli"
 cask "ghostty"
 cask "alfred"
+cask "betterdisplay"
+cask "claude-code"
 cask "cleanshot"
+cask "codex"
+cask "deepl"
 cask "elgato-stream-deck"
+cask "firefox"
 cask "google-chrome"
 cask "microsoft-teams"
 cask "monitorcontrol"
 cask "obsidian"
+cask "podman-desktop"
+cask "signal"
 cask "visual-studio-code"
 cask "yubico-authenticator"
+cask "zed"
 cask "zoom"
 
 EOF
+
+# Homebrew 7 runs commands from third-party taps only once they are trusted
+brew trust --command buo/cask-upgrade/cu

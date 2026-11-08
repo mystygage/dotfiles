@@ -5,7 +5,8 @@
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}"
 export ZDOTDIR="${ZDOTDIR:=$XDG_CONFIG_HOME/zsh}"
 
-# Don't show homebrew hints
+# Don't show homebrew hints, don't send analytics
 export HOMEBREW_NO_ENV_HINTS=1
+export HOMEBREW_NO_ANALYTICS=1
 
 source "$ZDOTDIR/.zshenv"

@@ -110,7 +110,7 @@ Static data lives in `home/.chezmoidata.toml` (read on every apply, no `chezmoi 
 Helpers in `home/.chezmoitemplates/`:
 - `script_darwin_only`: exits if not on macOS
 - `script_eval_brew`: sets up Homebrew for the current architecture (arm64/x86), renders nothing on Linux
-- `script_sudo`: sudo keep-alive during script execution
+- `script_sudo`: sudo keep-alive during script execution, `sudo -k` on exit. It sets the EXIT trap, so a script using it can't set its own.
 - `script_fda`: aborts unless Full Disk Access is granted
 - `script_skip_if_no_mas`: exits unless `.installmas == "yes"`
 
