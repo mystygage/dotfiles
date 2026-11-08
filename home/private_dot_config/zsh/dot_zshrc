@@ -77,12 +77,16 @@ _zsh_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 [[ -d "$_zsh_cache_dir" ]] || mkdir -p "$_zsh_cache_dir"
 
 _cached_eval() {
-  # $1 = cache filename, $2... = command to produce the eval output
+  # $1 = cache filename, $2... = command to produce the eval output.
+  # The first line records the resolved binary. Homebrew upgrades change that
+  # path (Cellar/<version>), which rebuilds the cache.
   local cache="${_zsh_cache_dir}/$1"; shift
-  if [[ ! -s "$cache" ]]; then
-    "$@" >| "$cache" 2>/dev/null
+  local stamp="# ${commands[$1]:A}" first="" output
+  [[ -r "$cache" ]] && read -r first < "$cache"
+  if [[ "$first" != "$stamp" ]] && output="$("$@" 2>/dev/null)" && [[ -n "$output" ]]; then
+    print -r -- "$stamp"$'\n'"$output" >| "$cache"
   fi
-  source "$cache"
+  [[ -r "$cache" ]] && source "$cache"
 }
 
 # Jump, `cd` on steroids
