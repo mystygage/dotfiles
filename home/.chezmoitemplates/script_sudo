@@ -1,9 +1,12 @@
 # Ask for the administrator password upfront
 sudo -v
 
-# Keep-alive: update existing `sudo` time stamp until this script has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# Keep-alive: update existing `sudo` time stamp until this script has finished.
+# The loop inherits set -e, so a failed refresh (time stamp dropped by an
+# installer) must not end it.
+while true; do sudo -n true || true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 sudo_keepalive=$!
 # On exit stop it and drop the time stamp, so the terminal doesn't keep
 # password-free sudo for another 5 minutes. Scripts using this have no own EXIT trap.
-trap 'kill "$sudo_keepalive" 2>/dev/null; sudo -k' EXIT
+# set -e applies in the trap too: a failing kill would turn a successful run into exit 1.
+trap 'kill "$sudo_keepalive" 2>/dev/null || true; sudo -k' EXIT
