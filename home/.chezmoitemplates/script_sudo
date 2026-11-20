@@ -6,6 +6,8 @@ sudo -v
 # installer) must not end it.
 while true; do sudo -n true || true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 sudo_keepalive=$!
+# Out of the job table, so bash doesn't print "Terminated" when the trap kills it
+disown
 # On exit stop it and drop the time stamp, so the terminal doesn't keep
 # password-free sudo for another 5 minutes. Scripts using this have no own EXIT trap.
 # set -e applies in the trap too: a failing kill would turn a successful run into exit 1.
