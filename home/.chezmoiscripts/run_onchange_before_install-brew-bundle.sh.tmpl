@@ -9,11 +9,13 @@ set -euo pipefail
 # Persistent, also for brew runs that never read zshenv (GUI tools, chezmoi scripts)
 brew analytics off
 
-brew bundle --file=/dev/stdin <<EOF
+# Install only: upgrades would hit running apps on every apply, update-brew does them
+brew bundle --no-upgrade --file=/dev/stdin <<EOF
 
 tap "buo/cask-upgrade"
 
 brew "asdf"
+brew "atuin"
 brew "bash"
 brew "bat"
 brew "chezmoi"
@@ -67,7 +69,6 @@ cask "signal"
 cask "visual-studio-code"
 cask "yubico-authenticator"
 cask "zed"
-cask "zoom"
 
 EOF
 
