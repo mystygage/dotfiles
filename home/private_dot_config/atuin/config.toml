@@ -1,0 +1,12 @@
+# Local only: no sync account, no update check against api.atuin.sh.
+# Homebrew handles updates.
+update_check = false
+auto_sync = false
+
+# Enter puts the command on the line to edit, as fzf's Ctrl-R did
+enter_accept = false
+
+# zsh's HISTORY_IGNORE in .zshrc doesn't reach Atuin
+history_filter = [
+  "^cccccc", # accidental YubiKey OTP input
+]

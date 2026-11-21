@@ -51,7 +51,7 @@ HISTORY_IGNORE="cccccc*"
 HISTSIZE=200000
 SAVEHIST=100000
 
-# fzf search for ctrl-r
+# fzf: Ctrl-T files, Alt-C cd, ** completion. Ctrl-R goes to Atuin further down.
 [ -f ~/.config/fzf/fzf.zsh ] && source ~/.config/fzf/fzf.zsh
 
 # asdf version manager
@@ -92,6 +92,10 @@ _cached_eval() {
 # Jump, `cd` on steroids
 # Usage: `j dotfiles` instead of `cd ~/Projects/private/dotfiles`
 (( $+commands[jump] )) && _cached_eval jump.zsh jump shell
+
+# Atuin, shell history in SQLite. After fzf: Ctrl-R goes to Atuin, Ctrl-T and
+# Alt-C stay with fzf. Up stays with prezto's history-substring-search.
+(( $+commands[atuin] )) && _cached_eval atuin.zsh atuin init zsh --disable-up-arrow
 
 # 1Password CLI
 if command -v op &>/dev/null; then

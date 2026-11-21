@@ -16,6 +16,11 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:=$HOME/.local/state}"
 export ASDF_CONFIG_FILE="${XDG_CONFIG_HOME}/asdf/asdfrc"
 export ASDF_DATA_DIR="${XDG_DATA_HOME}/asdf"
 
+# Atuin defaults to ~/.atuin. Config stays with the managed config.toml,
+# databases, key and logs go under XDG_DATA_HOME.
+export ATUIN_CONFIG_DIR="${XDG_CONFIG_HOME}/atuin"
+export ATUIN_HOME="${XDG_DATA_HOME}/atuin"
+
 # One order for login and non-login shells: shims first so .tool-versions wins,
 # user dirs last so they can't shadow system tools.
 typeset -gU path
