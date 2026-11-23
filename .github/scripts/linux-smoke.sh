@@ -38,6 +38,13 @@ for path in Library .config/ghostty .config/zed .config/nvim .config/asdf .tool-
   [ ! -e "$HOME/$path" ] || fail "macOS-only path deployed: $path"
 done
 
+echo "--- zellij runs at its pin, with its config"
+[ -r "$HOME/.config/zellij/config.kdl" ] || fail "zellij config is not deployed"
+release="$(sed -n '/^\[pins\.zellij\]/,/^\[/s/^  release = "v\(.*\)"/\1/p' "$root/home/.chezmoidata.toml")"
+version="$("$HOME/.local/bin/zellij" --version 2>&1)" || fail "zellij does not run: $version"
+[ "$version" = "zellij $release" ] || fail "zellij is $version, pinned $release"
+"$HOME/.local/bin/zellij" setup --check </dev/null >/dev/null 2>&1 || fail "zellij rejects its config"
+
 echo "--- prezto and powerlevel10k at their pins"
 prezto="$HOME/.config/zsh/.zprezto"
 pin="$(sed -n '/^\[pins\.prezto\]/,/^\[/s/^  ref = "\(.*\)"/\1/p' "$root/home/.chezmoidata.toml")"

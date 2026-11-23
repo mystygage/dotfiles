@@ -14,3 +14,16 @@
   url = "https://github.com/{{ $fonts.repo }}/raw/{{ $fonts.ref }}/MesloLGS%20NF%20{{ $style | replace " " "%20" }}.ttf"
   checksum.sha256 = "{{ $sum }}"
 {{- end }}
+{{- if eq .chezmoi.os "linux" }}
+{{- $zellij := .pins.zellij }}
+{{- $arch := get (dict "amd64" "x86_64" "arm64" "aarch64") .chezmoi.arch }}
+{{- if $arch }}
+# Linux only, macOS gets zellij from Homebrew
+['.local/bin/zellij']
+  type = "archive-file"
+  url = "https://github.com/{{ $zellij.repo }}/releases/download/{{ $zellij.release }}/zellij-no-web-{{ $arch }}-unknown-linux-musl.tar.gz"
+  checksum.sha256 = "{{ index $zellij.sha256 $arch }}"
+  path = "zellij"
+  executable = true
+{{- end }}
+{{- end }}

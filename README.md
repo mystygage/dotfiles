@@ -33,7 +33,7 @@ On a machine that already has files in place, look before you apply: `chezmoi in
 
 ## Linux servers and containers
 
-Linux gets the shell setup only: zsh with prezto, git config and shell helpers. Mac apps, fonts, neovim and asdf configs are skipped, and nothing needs `sudo`. The dotfiles don't install packages on Linux, so install the prerequisites first:
+Linux gets the shell setup only: zsh with prezto, git config, shell helpers and zellij (a pinned static binary in `~/.local/bin`, plus its config). Mac apps, fonts, neovim and asdf configs are skipped, and nothing needs `sudo`. The dotfiles don't install system packages, so install the prerequisites first:
 
 ```bash
 sudo apt-get install -y zsh git curl

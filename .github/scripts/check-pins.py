@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Reports pinned third-party code that has fallen behind upstream.
 
-Commit pins live in home/.chezmoidata.toml, the Withings image digest in its
-script. Being behind is a warning. It fails once upstream changes have waited
-longer than MAX_LAG_DAYS, or when a pinned commit is no longer on upstream's
-default branch (force push, or the repo moved).
+Commit and release pins live in home/.chezmoidata.toml, the Withings image
+digest in its script. Being behind is a warning. It fails once upstream changes
+have waited longer than MAX_LAG_DAYS, when a pinned commit is no longer on
+upstream's default branch (force push, or the repo moved), or when a pinned
+release is gone.
 """
 
 import datetime
@@ -14,6 +15,7 @@ import pathlib
 import re
 import sys
 import tomllib
+import urllib.error
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -48,10 +50,10 @@ def days_since(timestamp):
 
 
 def pins(table, prefix=""):
-    """Yields (name, pin) for every table with repo and ref, nested ones too."""
+    """Yields (name, pin) for every table with repo and ref or release, nested ones too."""
     for key, value in table.items():
         if isinstance(value, dict):
-            if "repo" in value and "ref" in value:
+            if "repo" in value and ("ref" in value or "release" in value):
                 yield prefix + key, value
             else:
                 yield from pins(value, f"{prefix}{key}.")
@@ -86,6 +88,20 @@ def check_commit(name, pin):
     return report(name, days_since(oldest), message)
 
 
+def check_release(name, pin):
+    latest = github(f"repos/{pin['repo']}/releases/latest")
+    if latest["tag_name"] == pin["release"]:
+        print(f"{name}: up to date with {pin['release']}")
+        return 0
+    try:
+        github(f"repos/{pin['repo']}/releases/tags/{pin['release']}")
+    except urllib.error.HTTPError as error:
+        print(f"::error::{name}: release {pin['release']} is gone ({error.code})")
+        return 1
+    message = f"{latest['tag_name']} is out, pinned {pin['release']}, see {latest['html_url']}"
+    return report(name, days_since(latest["published_at"]), message)
+
+
 def check_image(script):
     image, pinned = IMAGE.search(script.read_text()).groups()
     with request(f"https://ghcr.io/token?scope=repository:{image}:pull") as response:
@@ -105,7 +121,10 @@ def check_image(script):
 def main():
     data_file, withings = [pathlib.Path(arg) for arg in sys.argv[1:3]] or [DATA, WITHINGS]
     data = tomllib.loads(data_file.read_text())
-    failed = sum(check_commit(name, pin) for name, pin in pins(data["pins"]))
+    failed = sum(
+        check_release(name, pin) if "release" in pin else check_commit(name, pin)
+        for name, pin in pins(data["pins"])
+    )
     failed += check_image(withings)
     print(f"{failed} pins failed")
     return 1 if failed else 0

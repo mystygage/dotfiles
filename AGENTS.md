@@ -87,7 +87,7 @@ Actions, images and the chezmoi download are pinned by commit, digest and checks
 
 ## Linux
 
-Target is servers and containers: zsh, prezto and git config only. No Linuxbrew, no commit signing, no packages installed by the dotfiles.
+Target is servers and containers: zsh, prezto, git and zellij only. No Linuxbrew, no commit signing, no system packages installed by the dotfiles. The one binary they install is zellij, a pinned static release in `~/.local/bin`.
 
 - `home/.chezmoiignore` lists what is skipped on Linux. New macOS-only files go there.
 - Scripts that make no sense on Linux use `script_darwin_only`.
@@ -104,7 +104,7 @@ Template data is defined in `home/.chezmoi.toml.tmpl`:
 
 Static data lives in `home/.chezmoidata.toml` (read on every apply, no `chezmoi init` needed):
 - `.yubikeys`: serial + SSH public key per YubiKey, used for git commit signing (`allowed_signers`)
-- `.pins`: commit (and checksum) for prezto, powerlevel10k, the fonts and each asdf plugin. To update, read upstream's changes, then bump `ref`. An archive or file also needs its new `sha256`. The scripts and externals render the pins, so the next `chezmoi apply` moves existing machines too.
+- `.pins`: commit (and checksum) for prezto, powerlevel10k, the fonts and each asdf plugin, release tag and checksums for zellij. To update, read upstream's changes, then bump `ref` (or `release`). An archive or file also needs its new `sha256`. The scripts and externals render the pins, so the next `chezmoi apply` moves existing machines too.
 
 Helpers in `home/.chezmoitemplates/`:
 - `script_darwin_only`: exits if not on macOS
@@ -118,6 +118,7 @@ Helpers in `home/.chezmoitemplates/`:
 Defined in `home/.chezmoiexternal.toml` (a template, pins from `.chezmoidata.toml`):
 - powerlevel10k as an archive in `~/.local/share/powerlevel10k`, sourced by `.zshrc`. Prezto's `prompt` module is not loaded, its submodule lags behind.
 - MesloLGS Nerd Font files (for powerlevel10k) in `~/Library/Fonts`
+- zellij on Linux as `~/.local/bin/zellij`, the static musl build without the web server. macOS gets it from Homebrew.
 
 Prezto itself is a git clone with submodules, so `run_onchange_after_10-install-prezto.sh.tmpl` checks out the pinned commit. It stops when the clone has local edits.
 

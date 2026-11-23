@@ -31,6 +31,16 @@
   "Italic" = "6f357bcbe2597704e157a915625928bca38364a89c22a4ac36e7a116dcd392ef"
   "Bold Italic" = "56b4131adecec052c4b324efb818dd326d586dbc316fc68f98f1cae2eb8d1220"
 
+# Linux only, macOS gets zellij from Homebrew. Static musl build without the
+# web server, pinned by release tag. A new release needs both archive sums of
+# zellij-no-web-<arch>-unknown-linux-musl.tar.gz.
+[pins.zellij]
+  repo = "zellij-org/zellij"
+  release = "v0.46.0"
+[pins.zellij.sha256]
+  x86_64 = "6ddb3296479e8832c2c7a43252e404877b6507c833719663dd10b3b2182185fa"
+  aarch64 = "f43fbb9fa1bfd945c70a932c2d8974d23c60dae118d13915b762d944774f601d"
+
 # One entry per tool in dot_tool-versions. asdf-java ships its version list
 # in the repo, so a new JDK needs a newer ref.
 [pins.asdf.nodejs]

@@ -1,0 +1,4 @@
+// Zellij configuration
+// Fixed dark theme for Ghostty
+
+theme "default"
